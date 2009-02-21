@@ -48,6 +48,10 @@ module Snipe
         @put_timer ||= ::Hitimes::Timer.new
       end
 
+      def timer
+        @timer ||= ::Hitimes::Timer.new
+      end
+
       # only registered as an observer if there is a beanstalk server
       def update( *args )
         event = args.first
@@ -58,16 +62,16 @@ module Snipe
 
       def parse_gnip_notification( fname )
         logger.info "Start parsing #{fname}"
-        duration = ::Hitimes::Interval.measure {
+        timer.measure {
           io = Zlib::GzipReader.open( fname )
           parse_io( io )
           io.close
         }
-        mps = put_timer.count / duration
+        mps = put_timer.count / timer.duration
 
         logger.info "  --> Summary <--"
         logger.info "    beanstalk put : #{put_timer.count} at #{"%0.3f" % put_timer.rate} mps for a total of #{"%0.3f" % put_timer.sum} seconds"
-        logger.info "    total         : #{put_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % duration} seconds"
+        logger.info "    total         : #{put_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
         logger.info "Done parsing #{fname}"
       end
     end

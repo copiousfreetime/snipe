@@ -100,5 +100,5 @@ end
 
 require 'snipe/commands/setup'
 require 'snipe/commands/notify'
-#require 'snipe/commands/parse'
+require 'snipe/commands/parse'
 #require 'snipe/commands/scrape'

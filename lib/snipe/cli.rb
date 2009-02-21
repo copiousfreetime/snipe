@@ -32,6 +32,14 @@ module Snipe
       run { Cli.run_command_with_params( 'notify', params ) }
     }
 
+    mode( :parse ) {
+      mixin :option_home
+      mixin :option_log_level
+      mixin :option_daemonize
+
+      run { Cli.run_command_with_params( 'parse', params ) }
+    }
+
     mode( :scrape ) {
       mixin :option_home
       mixin :option_log_level
