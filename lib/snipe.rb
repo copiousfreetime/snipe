@@ -7,6 +7,8 @@ module Snipe
 end
 
 # External requirements
+require 'rubygems'
+require 'configuration'
 
 
 # Internal requirements
@@ -15,3 +17,5 @@ require 'snipe/version'
 require 'snipe/error'
 require 'snipe/configuration'
 require 'snipe/log'
+require 'snipe/gnip/parser'
+require 'snipe/queues'

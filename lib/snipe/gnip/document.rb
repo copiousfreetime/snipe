@@ -22,6 +22,7 @@ module Snipe
         return unless name == "activity"
         @timer.start
         @event = Gnip::Event.new( attrs )
+        Snipe::Queues::GnipEventQueue.put ::Marshal.dump( @event )
       end
 
       def end_element( name )

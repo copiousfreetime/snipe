@@ -40,3 +40,15 @@ Configuration.for("logging" ) do
   filename "snipe.log"
 end
 
+#-----------------------------------------------------------------------
+# Configuration for all things related to gnip
+#-----------------------------------------------------------------------
+Configuration.for("gnip") do
+  # The connection string for the gnip beanstalk queue
+  #
+  queue {
+    name        "gnip"
+    connection "localhost:11300"
+  }
+
+end
