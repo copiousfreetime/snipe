@@ -7,11 +7,11 @@ require 'tasks/utils'
 # General project configuration
 #-----------------------------------------------------------------------
 Configuration.for('project') {
-  name          "FIXME: NAME"
-  version       "FIXME: 0.0.0"
-  author        "FIXME: The Author"
-  email         "FIXME: author@example.com"
-  homepage      "FIXME: http://project.example.com"
+  name          "snipe"
+  version       Snipe::VERSION
+  author        "Jeremy Hinegadner"
+  email         "jeremy@copiousfreetime.org"
+  homepage      "http://snipe.copiousfreetime.org"
   description   Utils.section_of("README", "description")
   summary       description.split(".").first
   history       "HISTORY"
