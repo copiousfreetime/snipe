@@ -1,0 +1,7 @@
+pkg/*
+doc/*
+coverage/*
+tags
+tmp/*
+*~
+*.swp
