@@ -1,4 +1,5 @@
 
+require 'daemonize'
 class Time
   def self.from_bucket_id( id )
     year  = id[0..3].to_i
@@ -133,6 +134,7 @@ module Snipe
         timer = Hitimes::Timer.new
         while current <= last
           timer.measure do 
+            $0 = "Downloading #{current}"
             download_bucket( current )
             update_last_bucket_id( current )
             current = next_bucket_id( current )
@@ -147,11 +149,12 @@ module Snipe
         logger.info "Gnip download service started"
         loop do 
           timer = download_batch(current_bucket_id, current_max_bucket_id)
-          puts "Batch of #{timer.count} downloaded at #{timer.rate} bps"
+          logger.info "Batch of #{timer.count} downloaded at #{timer.rate} bps"
           current_bucket_id = next_bucket_id( current_max_bucket_id )
           loop do
             current_max_bucket_id = self.gnip_last_bucket_id
             break if current_max_bucket_id >= current_bucket_id
+            $0 = "sleeping"
             sleep 60
           end
         end

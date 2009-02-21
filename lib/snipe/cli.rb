@@ -15,8 +15,21 @@ module Snipe
     run { help! }
 
     mode( :setup ) {
+      option( :home ) do
+        description "The root directory of the Snipe process"
+        argument :required
+        default Snipe::Paths.root_dir
+      end
+ 
+      run { Cli.run_command_with_params( 'setup', params ) }
+    }
+
+    mode( :notify ) {
       mixin :option_home
       mixin :option_log_level
+      mixin :option_daemonize
+
+      run { Cli.run_command_with_params( 'notify', params ) }
     }
 
     mode( :scrape ) {

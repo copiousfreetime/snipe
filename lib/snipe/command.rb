@@ -1,4 +1,5 @@
 require 'snipe'
+
 module Snipe
   # The Command is the base class for any class that wants to implement a
   # commandline command for sst-agent.
@@ -20,8 +21,17 @@ module Snipe
   class Command
     class Error < ::Snipe::Error; end
 
+    def self.command_name
+      name.split("::").last.downcase
+    end
+
+    attr_reader :options
+    def initialize( opts = {} )
+      @options = opts
+    end
+
     def command_name
-      self.class.name.split("::").last.downcase
+      self.class.command_name
     end
 
     def logger
@@ -62,6 +72,17 @@ module Snipe
         end
         return @commands
       end
+
+      # get the command klass for the given name
+      def find( name )
+        @commands.find { |klass| klass.command_name == name }
+      end
+
     end
   end
 end
+
+require 'snipe/commands/setup'
+require 'snipe/commands/notify'
+#require 'snipe/commands/parse'
+#require 'snipe/commands/scrape'

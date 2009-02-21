@@ -1,6 +1,7 @@
 require 'snipe/command'
 require 'snipe/configuration'
 require 'snipe/log'
+
 module Snipe
   # Prepares the environment and then runs a command.  This makes sure that the
   # configuration file is loaded and the logger is writing and then runs the
@@ -43,6 +44,22 @@ module Snipe
 
     def logger
       @logger ||= ::Logging::Logger[self]
+    end
+
+    def run( command_name )
+      begin
+        logger.info "Running command #{command_name}"
+        @options.each do |k,v|
+          logger.debug "  #{k} => #{v}" if v
+        end
+        cmd  = Command.find( command_name ).new( @options )
+        cmd.before
+        cmd.run
+      rescue => e
+        logger.error "#{e.message} while running #{command_name}"
+      ensure
+        cmd.after
+      end
     end
   end
 end
