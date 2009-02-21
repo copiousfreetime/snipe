@@ -1,7 +1,9 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'snipe'
 
-q = Snipe::Queues.gnip_activity_queue
+#q = Snipe::Queues.gnip_activity_queue
+q = Snipe::Queues.gnip_parse_queue
+
 q.list_tubes.each do |t|
   stats = q.stats_tube( t )
   puts "Name : #{t}    total-jobs : #{stats['total-jobs']}    current-jobs-read : #{stats['current-jobs-ready']}"

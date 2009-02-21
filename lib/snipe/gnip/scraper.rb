@@ -4,6 +4,7 @@ require 'zlib'
 require 'time'
 require 'parsedate'
 require 'hitimes'
+require 'observer'
 
 class Time
   def self.from_bucket_id( id )
@@ -34,6 +35,8 @@ module Snipe
       attr_reader :username
       attr_reader :password
       attr_reader :user_agent
+
+      include Observable
 
       # initialize with the username and password of the person connecting 
       def initialize( config = Configuration.for('gnip').scraper )
@@ -136,6 +139,7 @@ module Snipe
           f.write( c.body_str )
           logger.info "writing #{bucket}"
         end
+        return bucket
       end
 
       def next_bucket_id( this_bucket )
@@ -149,9 +153,12 @@ module Snipe
         timer = Hitimes::Timer.new
         while current <= last
           timer.measure do 
-            download_bucket( current )
+            bucket_file = download_bucket( current )
             update_last_bucket_id( current )
             current = next_bucket_id( current )
+
+            self.changed
+            self.notify_observers( bucket_file )
           end
         end
         return timer

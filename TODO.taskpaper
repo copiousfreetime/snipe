@@ -1,8 +1,9 @@
 Scraping Gnipe:
-    - scraper daemon
-    - emits 'parse' events for files that need to be parsed
+    - scraper daemon @done(2009-02-21 15:22:46)
+    - emits 'parse' events for files that need to be parsed @done(2009-02-21 15:28:22)
 
 Emitting Queue Events:
     - parser to parse the xml @done(2009-02-21 11:17:27)
     - event class  @done(2009-02-21 11:17:41)
+    - daemon process to read from gnip-parse and emit to gnip-activity
 
