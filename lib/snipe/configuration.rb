@@ -47,7 +47,7 @@ Configuration.for("gnip") do
   # The connection string for the gnip beanstalk queue
   #
   queue {
-    name        "gnip"
+    name       "gnip-events"
     connection "localhost:11300"
   }
 

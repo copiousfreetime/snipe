@@ -3,5 +3,6 @@ doc/*
 coverage/*
 tags
 tmp/*
+log/*
 *~
 *.swp

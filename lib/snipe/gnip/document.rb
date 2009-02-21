@@ -1,9 +1,12 @@
 require 'hitimes'
 require 'nokogiri'
 require 'snipe/gnip/event'
+require 'observer'
 module Snipe
   module Gnip
     class Document < ::Nokogiri::XML::SAX::Document
+      include Observable
+
       attr_reader :timer
       attr_reader :interval
       def self.from_gz( path )
@@ -22,7 +25,8 @@ module Snipe
         return unless name == "activity"
         @timer.start
         @event = Gnip::Event.new( attrs )
-        Snipe::Queues::GnipEventQueue.put ::Marshal.dump( @event )
+        self.changed
+        self.notify_observers( @event )
       end
 
       def end_element( name )
