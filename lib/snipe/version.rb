@@ -9,16 +9,17 @@ module Snipe
     MINOR   = 0
     BUILD   = 1
 
-    def to_a 
+    def self.to_a 
       [MAJOR, MINOR, BUILD]
     end
 
-    def to_s
+    def self.to_s
       to_a.join(".")
     end
 
-    module_function :to_a
-    module_function :to_s
+    def self.to_hash
+      { :major => MAJOR, :minor => MINOR, :build => BUILD }
+    end
 
     STRING = Version.to_s
   end
