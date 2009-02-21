@@ -70,7 +70,7 @@ Configuration.for('test') {
 Configuration.for('rcov') {
   output_dir  "coverage"
   libs        %w[ lib ]
-  rcov_opts   %w[ --html ]
+  rcov_opts   %w[ --html --exclude '/config/snipe.rb,spec/.*\.rb\z' ]
   ruby_opts   %w[ ]
   test_files  Configuration.for('packaging').files.test
 }

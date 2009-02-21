@@ -44,11 +44,27 @@ end
 # Configuration for all things related to gnip
 #-----------------------------------------------------------------------
 Configuration.for("gnip") do
-  # The connection string for the gnip beanstalk queue
+  # The connection string for the gnip beanstalk queue dealing with activity
+  # events
   #
-  queue {
-    name       "gnip-events"
+  activity_queue {
+    name       "gnip-activity"
     connection "localhost:11300"
   }
 
+  # The connection string for the gnip beanstalk queue dealing with parse events
+  parse_queue {
+    name       "gnip-parse"
+    connection "localhost:11300"
+  }
+
+  # The scraper connection information
+  scraper {
+    connection {
+      username "jeremy@copiousfreetime"
+      password "red1fish"
+    }
+    user_agent "Snipe/#{Snipe::Version}"
+    compressed true
+  }
 end

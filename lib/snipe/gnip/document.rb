@@ -9,9 +9,7 @@ module Snipe
 
       attr_reader :timer
       attr_reader :interval
-      def self.from_gz( path )
-        new( Zlib::GzipReader.open( "data/200902210100.xml.gz" ).read )
-      end
+
       def initialize
         @timer = ::Hitimes::Timer.new
         @interval =  ::Hitimes::Interval.new

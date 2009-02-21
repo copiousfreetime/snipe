@@ -54,7 +54,7 @@ module Snipe
     end
 
     def self.filename
-      File.join( self.directory, ( configuration.filename || "sst-agent.log" ) )
+      File.join( self.directory, ( configuration.filename || "snipe.log" ) )
     end
 
     def self.layout

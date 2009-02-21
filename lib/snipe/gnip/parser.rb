@@ -30,7 +30,7 @@ module Snipe
         when nil
           @beanstalk_server = nil
         when :default
-          @beanstalk_server = Snipe::Queues.gnip_event_queue rescue nil
+          @beanstalk_server = Snipe::Queues.gnip_activity_queue rescue nil
         else
           if bean_opt.respond_to?( :put ) then
             @beanstalk_server = bean_opt
@@ -54,7 +54,6 @@ module Snipe
         put_timer.measure {
           beanstalk_server.put( Marshal.dump( event ) ) if beanstalk_server
         }
-
       end
 
       def parse_gnip_notification( fname )
@@ -68,7 +67,7 @@ module Snipe
 
         logger.info "  --> Summary <--"
         logger.info "    beanstalk put : #{put_timer.count} at #{"%0.3f" % put_timer.rate} mps for a total of #{"%0.3f" % put_timer.sum} seconds"
-        logger.info "    the rest      : #{put_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % duration} seconds"
+        logger.info "    total         : #{put_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % duration} seconds"
         logger.info "Done parsing #{fname}"
       end
     end

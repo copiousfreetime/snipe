@@ -7,5 +7,6 @@
 
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'snipe'
+require 'snipe/cli'
 
-Snipe::Cli.new( ARGV, ENV ).run
+::Snipe::Cli.new( ARGV, ENV ).run

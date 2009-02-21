@@ -30,7 +30,7 @@ module Spec
   module Helpers
     require 'tmpdir'
     def make_temp_dir( unique_id = $$ )
-      dirname = File.join( Dir.tmpdir, "sst-agent-#{unique_id}" ) 
+      dirname = File.join( Dir.tmpdir, "snipe-#{unique_id}" ) 
       FileUtils.mkdir_p( dirname ) unless File.directory?( dirname )
       return dirname
     end
