@@ -1,5 +1,10 @@
+require 'base64'
+require 'curb'
+require 'zlib'
+require 'time'
+require 'parsedate'
+require 'hitimes'
 
-require 'daemonize'
 class Time
   def self.from_bucket_id( id )
     year  = id[0..3].to_i
@@ -58,6 +63,7 @@ module Snipe
             @start_bucket = Scraper.start_bucket
           end
         end
+        logger.info "Start bucket is #{@start_bucket}"
         return @start_bucket
       end
 
@@ -82,7 +88,7 @@ module Snipe
       def headers
         unless @headers 
           @headers = {
-            'Authorization'    => "Basic #{Base64::encode64( "#{USER}:#{PASS}" )}".strip,
+            'Authorization'    => "Basic #{Base64::encode64( "#{username}:#{password}" )}".strip,
             "Content-Type"     => "application/xml",
             "User-Agent"       => user_agent
           }
@@ -95,7 +101,7 @@ module Snipe
       end
 
       def gnip_last_bucket_id
-        c = Curl::Easy.new( "https://prod.gnipcentral.com/" )
+        c = ::Curl::Easy.new( "https://prod.gnipcentral.com/" )
         c.headers = self.headers
         bucket_id = 0
         c.on_header do |data| 
@@ -112,14 +118,23 @@ module Snipe
         return bucket_id
       end
 
+      def bucket_data_file( bucket_id )
+        t = Time.from_bucket_id( bucket_id )
+        d = Snipe::Paths.data_path( t.strftime( "%Y/%m/%d" ) )
+        FileUtils.mkdir_p( d ) unless File.directory?( d )
+        File.join( d, "#{bucket_id}.xml.gz" )
+      end
+
       # given a bucket id download it from gnip and put it in the appropriate file  
       def download_bucket( bucket_id )
         url = bucket_url( bucket_id )
         c = Curl::Easy.new( url )
         c.headers = self.headers
         c.perform
-        File.open( bucket_data_file( bucket_id ), "wb" ) do |f|
+        bucket = bucket_data_file( bucket_id )
+        File.open( bucket, "wb" ) do |f|
           f.write( c.body_str )
+          logger.info "writing #{bucket}"
         end
       end
 
@@ -134,7 +149,6 @@ module Snipe
         timer = Hitimes::Timer.new
         while current <= last
           timer.measure do 
-            $0 = "Downloading #{current}"
             download_bucket( current )
             update_last_bucket_id( current )
             current = next_bucket_id( current )
@@ -143,7 +157,7 @@ module Snipe
         return timer
       end       
 
-      def start_daemon
+      def start
         current_bucket_id = self.start_bucket
         current_max_bucket_id = self.gnip_last_bucket_id
         logger.info "Gnip download service started"
@@ -154,7 +168,6 @@ module Snipe
           loop do
             current_max_bucket_id = self.gnip_last_bucket_id
             break if current_max_bucket_id >= current_bucket_id
-            $0 = "sleeping"
             sleep 60
           end
         end

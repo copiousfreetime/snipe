@@ -24,6 +24,9 @@ Snipe::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_dependency("configuration", "~> 0.0.5")
   spec.add_dependency("logging", "~> 0.9.6")
   spec.add_dependency("beanstalk-client", "~> 1.0.2")
+  spec.add_dependency("nokogiri", "~> 1.1.1" )
+  spec.add_dependency("curb", "~> 0.1.4")
+  spec.add_dependency("daemons", "~> 1.0.10")
 
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions << ext_conf.configs

@@ -46,13 +46,26 @@ module Snipe
       @logger ||= ::Logging::Logger[self]
     end
 
-    def run( command_name )
-      begin
-        logger.info "Running command #{command_name}"
-        @options.each do |k,v|
-          logger.debug "  #{k} => #{v}" if v
+    def setup_signal_handling
+      %w( INT QUIT TERM ).each do |s| 
+        Signal.trap(s) do 
+          logger.warn "Signal caught, stopping"
+          exit 1
         end
+      end
+    end
+
+    def run( command_name )
+      logger.info "Running command #{command_name}"
+      $0 = command_name
+      Snipe::Log.console = :info
+      @options.each do |k,v|
+        logger.debug "  #{k} => #{v}" if v
+      end
+      begin
         cmd  = Command.find( command_name ).new( @options )
+        cmd.daemonize
+        setup_signal_handling
         cmd.before
         cmd.run
       rescue => e

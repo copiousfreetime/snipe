@@ -2,13 +2,13 @@ require 'fileutils'
 module Snipe::Commands
   class Setup < Snipe::Command
     def run
-      home = options['home']
+      home = File.expand_path( options['home'] )
       unless File.directory?( home )
         logger.info "Creating home directory #{home}"
         FileUtils.mkdir_p home
       end
       
-      %w[ config data log tmp ].each do |sub|
+      %w[ pid config data log tmp ].each do |sub|
         meth = "#{sub}_path"
         d = Snipe::Paths.send( meth )
         unless File.directory?( d )

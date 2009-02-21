@@ -1,7 +1,10 @@
-module Snipe::Commands_command
+require 'daemons'
+require 'snipe/gnip/scraper'
+module Snipe::Commands
   class Notify < Snipe::Command
     def run
-      puts options.inspect
+      scraper = ::Snipe::Gnip::Scraper.new
+      scraper.start
     end
   end
 end

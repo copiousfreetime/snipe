@@ -38,6 +38,22 @@ module Snipe
       ::Logging::Logger[self]
     end
 
+    # easily daemonize the process but only if the daemonize option is set
+    def daemonize
+      if options['daemonize'] then
+        logger.info "Daemonizing #{command_name}"
+        ag = Daemons::ApplicationGroup.new( command_name, :dir      => Snipe::Paths.pid_path,
+                                                          :dir_mode => :normal )
+        ag.new_application( :mode => :none ).start
+
+       # reopen all the logs
+        Snipe::Log.init
+        logger.info "Running as a daemon"
+      end
+    end
+
+
+
     # called by the Runner before the command, this can be used to setup
     # additional items for the command
     def before() nil end

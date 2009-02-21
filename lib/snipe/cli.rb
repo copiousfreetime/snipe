@@ -57,8 +57,7 @@ module Snipe
     mixin :option_daemonize do
       option( 'daemonize' ) do
         description "Daemonize the process"
-        argument :none
-        default :false
+        cast :boolean
       end
     end
 

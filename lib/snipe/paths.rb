@@ -55,6 +55,10 @@ module Snipe
       self.home_path( "log", *args )
     end
 
+    def self.pid_path( *args )
+      self.home_path( "pid", *args )
+    end
+
     def self.tmp_path( *args )
       self.home_path( "tmp", *args )
     end

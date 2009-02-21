@@ -3,6 +3,7 @@ require 'snipe'
 
 module Snipe
   ::Logging::Logger[self].level = :info
+
   def self.logger
     ::Logging::Logger[self]
   end
@@ -23,6 +24,9 @@ module Snipe
       Snipe.logger.add_appenders( self.appender )
       Snipe.logger.info "Snipe version #{Snipe::VERSION}"
       self.level = configuration.level
+      Snipe.logger.add_appenders( Logging::Appender.stdout )
+      Logging::Appender.stdout.layout = self.console_layout
+      Logging::Appender.stdout.level = :off
 
       @initialized = true
     end
@@ -38,6 +42,10 @@ module Snipe
     def self.level=( l )
       ::Logging::Logger[Snipe].level = l
       self.appender.level = l
+    end
+
+    def self.console=( level )
+      Logging::Appender.stdout.level = level
     end
 
     def self.default_directory
@@ -72,5 +80,13 @@ module Snipe
           :size     => 1024**2 * 25 # 25 MB
       )
     end
+
+    def self.console_layout
+      @console_layout ||= Logging::Layouts::Pattern.new(
+        :pattern      => "%d %5l : %m\n",
+        :date_pattern => "%H:%M:%S"
+      )
+    end
+
   end
 end
