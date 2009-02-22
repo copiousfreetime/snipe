@@ -68,3 +68,10 @@ Configuration.for("gnip") do
     compressed true
   }
 end
+
+
+#-----------------------------------------------------------------------
+# Configuration for all things couchdb
+#-----------------------------------------------------------------------
+Configuration.for("couchdb") do
+end
