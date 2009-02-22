@@ -57,7 +57,6 @@ module Snipe
 
     def run( command_name )
       logger.info "Running command #{command_name}"
-      $0 = command_name
       Snipe::Log.console = :info
       @options.each do |k,v|
         logger.debug "  #{k} => #{v}" if v
@@ -69,10 +68,14 @@ module Snipe
         cmd.before
         cmd.run
       rescue => e
-        logger.error "#{e.message} while running #{command_name}"
+        logger.error "while running #{command_name} : #{e.message}"
+        e.backtrace.each do |l|
+          logger.debug l
+        end
       ensure
         cmd.after
       end
+      logger.info "end of command #{command_name}"
     end
   end
 end

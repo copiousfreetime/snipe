@@ -1,31 +1,28 @@
 require 'daemons'
 require 'snipe/gnip/parser'
+require 'snipe/beanstalk/observer'
+
 module Snipe::Commands
   class Parse < Snipe::Command
-    def parse_queue
-      @parse_queue ||= Snipe::Queues.gnip_parse_queue
+    def parse_queue_observer
+      @parse_queue_observer ||= Snipe::Beanstalk::Observer.parse_observer
     end
 
     def parser
-      unless defined? @parser
-        @parser = Snipe::Gnip::Parser.new
-        raise "not connected to activity queue" unless @parser.beanstalk_server
-      end
-      return @parser
+      @parser ||= Snipe::Gnip::Parser.new
+    end
+
+    # callec by the beanstalk observer when an item is pulled off the queue
+    def update( fname )
+      parser.parse_gnip_notification( fname )
     end
 
     def run
-      loop do
-        job = nil
-        begin
-          job = parse_queue.reserve
-          fname = job.body
-          parser.parse_gnip_notification( fname )
-          job.delete
-        rescue => e
-          job.release unless job.nil?
-          logger.error "Failure in processing a gnip file : #{e}"
-        end
+      if parse_queue_observer then
+        parse_queue_observer.add_observer( self )
+        parse_queue_observer.observe
+      else
+        logger.error "Unable to parse, not able to observe the parse queue"
       end
     end
   end

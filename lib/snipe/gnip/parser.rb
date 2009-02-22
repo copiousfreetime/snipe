@@ -1,10 +1,11 @@
 require 'nokogiri'
 require 'snipe/gnip/document'
 require 'zlib'
+require 'snipe/beanstalk/queue'
 module Snipe
   module Gnip
     class Parser < ::Nokogiri::XML::SAX::Parser
-      attr_accessor :beanstalk_server
+      attr_accessor :notify
 
       def self.parse_gnip_notification( fname )
         p = self.new
@@ -14,7 +15,7 @@ module Snipe
 
       def self.default_opts
         { :doc => Gnip::Document.new,
-          :beanstalk_server => :default }
+          :notify => :default }
       end
       
       def logger
@@ -26,26 +27,30 @@ module Snipe
         doc = opts.delete( :doc )
 
         super( doc )
-        case bean_opt = opts[:beanstalk_server]
+        case bean_opt = opts[:notify]
         when nil
-          @beanstalk_server = nil
+          @notify = nil
         when :default
-          @beanstalk_server = Snipe::Queues.gnip_activity_queue rescue nil
+          @notify = Snipe::Beanstalk::Queue.activity_queue rescue nil
         else
           if bean_opt.respond_to?( :put ) then
-            @beanstalk_server = bean_opt
+            @notify = bean_opt
           else
-            logger.error "the value given for :beanstalkd_server does not respond to put() => #{bean_opt.inspect}" 
-            @beanstalk_server = nil
+            logger.error "the value given for :notify does not respond to put() => #{bean_opt.inspect}" 
+            @notify = nil
           end
         end
-        logger.info "Connected to beanstalkd server #{beanstalk_server.addr}/#{beanstalk_server.list_tube_used}" if beanstalk_server
+        logger.info "Connected to beanstalkd server #{notify.name}" if can_notify?
 
         self.document.add_observer( self )
       end
 
-      def put_timer
-        @put_timer ||= ::Hitimes::Timer.new
+      def can_notify?
+        notify && notify.connected?
+      end
+
+      def notify_timer
+        @notify_timer ||= ::Hitimes::Timer.new
       end
 
       def timer
@@ -54,9 +59,9 @@ module Snipe
 
       # only registered as an observer if there is a beanstalk server
       def update( *args )
-        event = args.first
-        put_timer.measure {
-          beanstalk_server.put( Marshal.dump( event ) ) if beanstalk_server
+        tweet = args.first
+        notify_timer.measure {
+          notify.put( Marshal.dump( tweet ) ) if can_notify?
         }
       end
 
@@ -67,11 +72,11 @@ module Snipe
           parse_io( io )
           io.close
         }
-        mps = put_timer.count / timer.duration
+        mps = notify_timer.count / timer.duration
 
         logger.info "  --> Summary <--"
-        logger.info "    beanstalk put : #{put_timer.count} at #{"%0.3f" % put_timer.rate} mps for a total of #{"%0.3f" % put_timer.sum} seconds"
-        logger.info "    total         : #{put_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
+        logger.info "    notification : #{notify_timer.count} at #{"%0.3f" % notify_timer.rate} mps for a total of #{"%0.3f" % notify_timer.sum} seconds"
+        logger.info "    total        : #{notify_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
         logger.info "Done parsing #{fname}"
       end
     end

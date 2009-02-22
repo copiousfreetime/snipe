@@ -5,5 +5,16 @@ Scraping Gnipe:
 Emitting Queue Events:
     - parser to parse the xml @done(2009-02-21 11:17:27)
     - event class  @done(2009-02-21 11:17:41)
-    - daemon process to read from gnip-parse and emit to gnip-activity
+    - daemon process to read from gnip-parse and emit to gnip-activity @done(2009-02-22 01:24:22)
+
+Consuming and inserting int Couchdb:
+    - tweet model to hold data  @done(2009-02-22 01:24:40)
+    - fetcher to go get the tweet from upstream @done(2009-02-22 01:25:27)
+    - submiter to take the tweet and put it into couchdb
+    - commandline program to loop over the beanstalkd queue until empty
+
+Viewing:
+    - views in couchdb to show rollups
+    - different databases for users ?
+    - couchapp
 

@@ -25,6 +25,10 @@ module Snipe
     }
 
     mode( :notify ) {
+      description <<-txt
+      Download the notification stream from Gnip.
+      txt
+
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
@@ -33,6 +37,9 @@ module Snipe
     }
 
     mode( :parse ) {
+      description <<-txt
+      Parse the notification stream downloaded by 'notify' and emit activity events.
+      txt
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
@@ -40,12 +47,16 @@ module Snipe
       run { Cli.run_command_with_params( 'parse', params ) }
     }
 
-    mode( :scrape ) {
+    mode( :stor ) {
+      description <<-txt
+      Consume the activity events and store the resulting data into couchdb
+      txt
+
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
 
-      run { Cli.run_command_with_params( 'scrape', params ) }
+      run { Cli.run_command_with_params( 'store', params ) }
     }
 
     mode( :version ) {

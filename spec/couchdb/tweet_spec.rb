@@ -1,9 +1,9 @@
 require File.expand_path( File.join( File.dirname( __FILE__ ),"..", "spec_helper.rb"))
 
 require 'snipe'
-require 'snipe/twitter/tweet'
+require 'snipe/couchdb/tweet'
 
-describe Snipe::Twitter::Tweet do
+describe Snipe::CouchDB::Tweet do
   before( :each ) do
     @normal  = { "text"=>"como que manda blips aqui? num sei.", 
             "actor"=>"copiousfreetime", 
@@ -13,7 +13,7 @@ describe Snipe::Twitter::Tweet do
             "source"=>"DestroyTwitter",
             "text" => "como que manda blips aqui? num sei."}
 
-    @normal_t = Snipe::Twitter::Tweet.new( @normal )
+    @normal_t = Snipe::CouchDB::Tweet.new( @normal )
 
     @reply = { "source"=>"twhirl", 
             "regarding"=>"http://twitter.com/statuses/show/1232640554.xml" ,
@@ -24,7 +24,7 @@ describe Snipe::Twitter::Tweet do
             "at"=>"2009-02-21T00:36:54.000Z",
             "text" => "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"}
 
-    @reply_t = Snipe::Twitter::Tweet.new( @reply )
+    @reply_t = Snipe::CouchDB::Tweet.new( @reply )
 
     @hashtag = { "source" => "web",
                  "actor" => "sophiabliu",
@@ -32,11 +32,11 @@ describe Snipe::Twitter::Tweet do
                  "at"     => "2009-01-14T01:25:25.000Z",
                  "url"    => "http://twitter.com/status/show/1117167788.xml",
                  "text"   => "yesterday's blanket of snow has now covered the burned scars of the #boulderfire" }
-    @hashtag_t = Snipe::Twitter::Tweet.new( @hashtag )
+    @hashtag_t = Snipe::CouchDB::Tweet.new( @hashtag )
   end
 
   it "extacts the id from the url " do
-    @normal_t.id.should == "1232707799"
+    @normal_t.tweet_id.should == "1232707799"
   end
 
   it "extracts the source" do
@@ -48,7 +48,7 @@ describe Snipe::Twitter::Tweet do
   end
 
   it "has a created time" do
-    @reply_t.created_at.should == "2009-02-21T00:36:54.000Z"
+    @reply_t.at.should == "2009-02-21T00:36:54.000Z"
   end
 
   it "has the tweet content" do
@@ -65,5 +65,15 @@ describe Snipe::Twitter::Tweet do
 
   it "knows everyone else mentioned in the tweet" do
     @reply_t.mentioning.should == [ "@JeffreyLin" ]
+  end
+
+  it "updates mentioning when text is set" do
+    @reply_t.text = "This is something that @atmos and @aneiro said"
+    @reply_t.mentioning.should == %w[ @atmos @aneiro ]
+  end
+
+  it "updates hashtags when text is set" do
+    @hashtag_t.text = "What did you say about #thatstuff #overthere ?"
+    @hashtag_t.hashtags.should == %w[ #thatstuff #overthere ]
   end
 end

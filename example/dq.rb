@@ -1,14 +1,10 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'snipe'
 
-#q = Snipe::Queues.gnip_activity_queue
-q = Snipe::Queues.gnip_parse_queue
+q = Snipe::Beanstalk::Queue.activity_queue
+#q = Snipe::Beanstalk::Queue.parse_queue
 
-q.list_tubes.each do |t|
-  stats = q.stats_tube( t )
-  puts "Name : #{t}    total-jobs : #{stats['total-jobs']}    current-jobs-read : #{stats['current-jobs-ready']}"
-end
-puts "Listening for events on #{q.list_tube_used} #{q.list_tubes_watched}"
+puts "Listening for events on #{q.name}"
 loop do
   job = q.reserve
   obj = nil 

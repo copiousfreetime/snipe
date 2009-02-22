@@ -1,6 +1,6 @@
 require 'hitimes'
 require 'nokogiri'
-require 'snipe/gnip/event'
+require 'snipe/couchdb/tweet'
 require 'observer'
 module Snipe
   module Gnip
@@ -22,9 +22,9 @@ module Snipe
       def start_element( name, attrs = [])
         return unless name == "activity"
         @timer.start
-        @event = Gnip::Event.new( attrs )
+        tweet = ::Snipe::CouchDB::Tweet.new( attrs )
         self.changed
-        self.notify_observers( @event )
+        self.notify_observers( tweet )
       end
 
       def end_element( name )

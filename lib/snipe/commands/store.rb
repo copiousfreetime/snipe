@@ -1,4 +1,4 @@
-require 'snipe/gnip/event'
+require 'snipe/couchdb/tweet'
 module Snipe::Commands
   class Store < Snipe::Command
     def activity_queue 
@@ -18,8 +18,8 @@ module Snipe::Commands
         begin
           job = activity_queue.reserve
 
-          event = Marshal.restore( job.body )
-          tweet = fetcher.fetch_tweet( event )
+          tweet = Marshal.restore( job.body )
+          tweet['text']  = fetcher.fetch_tweet_text( tweet )
             
           job.delete
         rescue => e

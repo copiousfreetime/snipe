@@ -1,9 +1,12 @@
 require 'daemons'
 require 'snipe/gnip/scraper'
 module Snipe::Commands
+
+  # command used to notify of files that have been downloaded and need to be
+  # parsed.
   class Notify < Snipe::Command
-    def beanstalk_server
-      @beanstalk_server ||= Snipe::Queues.gnip_parse_queue
+    def notifier
+      @notifier ||= Snipe::Beanstalk::Queue.parse_queue
     end
 
     def run
@@ -14,7 +17,7 @@ module Snipe::Commands
 
     def update( *args )
       path = args.first
-      beanstalk_server.put( path ) if beanstalk_server
+      notifier.put( path ) if notifier
     end
   end
 end

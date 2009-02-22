@@ -50,18 +50,20 @@ Configuration.for("gnip") do
   activity_queue {
     name       "gnip-activity"
     connection "localhost:11300"
+    error_limit 20
   }
 
   # The connection string for the gnip beanstalk queue dealing with parse events
   parse_queue {
     name       "gnip-parse"
     connection "localhost:11300"
+    error_limit 20
   }
 
   # The scraper connection information
   scraper {
     connection {
-      username "jeremy@copiousfreetime"
+      username "jeremy@copiousfreetime.org"
       password "red1fish"
     }
     user_agent "Snipe/#{Snipe::Version}"

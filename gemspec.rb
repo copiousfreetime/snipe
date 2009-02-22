@@ -20,14 +20,17 @@ Snipe::GEM_SPEC = Gem::Specification.new do |spec|
   spec.executables  = pkg.files.bin.collect { |b| File.basename(b) }
 
   # add dependencies here
-  # spec.add_dependency("rake", ">= 0.8.1")
+  
+  # rubyforge
   spec.add_dependency("beanstalk-client", "~> 1.0.2")
   spec.add_dependency("configuration", "~> 0.0.5")
-  spec.add_dependency("couchreset", "~> 0.12.4" )
   spec.add_dependency("curb", "~> 0.1.4")
   spec.add_dependency("daemons", "~> 1.0.10")
   spec.add_dependency("logging", "~> 0.9.6")
   spec.add_dependency("nokogiri", "~> 1.1.1" )
+
+  # github
+  spec.add_dependency("jchris-couchreset", "~> 0.12.6" )
 
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions << ext_conf.configs
