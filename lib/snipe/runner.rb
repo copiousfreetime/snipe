@@ -46,9 +46,10 @@ module Snipe
       @logger ||= ::Logging::Logger[self]
     end
 
-    def setup_signal_handling
+    def setup_signal_handling( cmd )
       %w( INT QUIT TERM ).each do |s| 
         Signal.trap(s) do 
+          cmd.shutdown
           logger.warn "Signal caught, stopping"
           exit 1
         end
@@ -64,7 +65,7 @@ module Snipe
       begin
         cmd  = Command.find( command_name ).new( @options )
         cmd.daemonize
-        setup_signal_handling
+        setup_signal_handling( cmd )
         cmd.before
         cmd.run
       rescue => e

@@ -30,7 +30,7 @@ Snipe::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_dependency("nokogiri", "~> 1.1.1" )
 
   # github
-  spec.add_dependency("jchris-couchreset", "~> 0.12.6" )
+  spec.add_dependency("jchris-couchrest", "~> 0.12.6" )
 
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions << ext_conf.configs

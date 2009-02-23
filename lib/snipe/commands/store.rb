@@ -29,6 +29,12 @@ module Snipe::Commands
       end
     end
 
+    def shutdown
+      fetcher.log_stats( true )
+      tweet_store.flush
+      log_stats( true )
+    end
+
     # callec by the beanstalk observer when an item is pulled off the queue
     def update( obj )
       tweet = Marshal.restore( obj )
@@ -49,9 +55,7 @@ module Snipe::Commands
         logger.error "Unable to parse, not able to observe the activity queue"
       end
 
-      fetcher.log_stats( true )
-      tweet_store.flush
-      log_stats( true )
+      shutdown
     end
   end
 end

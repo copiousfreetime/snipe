@@ -79,6 +79,6 @@ Configuration.for("couchdb") do
   tweet_db {
     server     "http://localhost:5984"
     db_name    "tweets"
-    bulk_insert false # or set to a the number of docs to bulk insert
+    bulk_insert 250 # or set to a the number of docs to bulk insert
   }
 end

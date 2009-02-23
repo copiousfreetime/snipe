@@ -12,10 +12,10 @@ Configuration.for('project') {
   author        "Jeremy Hinegadner"
   email         "jeremy@copiousfreetime.org"
   homepage      "http://snipe.copiousfreetime.org"
-  description   Utils.section_of("README", "description")
-  summary       description.split(".").first
+  description   "Sniping"
+  summary       "Get it and do stuff with it"
   history       "HISTORY"
-  license       FileList["LICENSE", "COPYING"]
+  license       FileList["LICENSE"]
   readme        "README"
 }
 
