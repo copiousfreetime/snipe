@@ -6,7 +6,7 @@ conn = ::Beanstalk::Connection.new( "localhost:11300" )
 
 tube = 'gnip-activity'
 
-samples = 10
+samples = 30
 sleep_time = 1
 differences = []
 

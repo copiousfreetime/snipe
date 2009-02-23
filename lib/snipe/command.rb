@@ -66,10 +66,13 @@ module Snipe
 
     # called by the Runner after run() has completed.  This will be called even
     # if an error happens during run
-    def after() nil end
+    def after() nil; end
 
     # called by the Runner if an error is encountered during the run method
-    def error() nil end
+    def error() nil; end
+
+    # called by runner if a signal is hit
+    def shutdown() nil; end
 
     class << self
       # this method is invoked by the Ruby interpreter whenever a class inherts
