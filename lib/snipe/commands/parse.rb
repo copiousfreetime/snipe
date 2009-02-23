@@ -20,7 +20,7 @@ module Snipe::Commands
     def run
       if parse_queue_observer then
         parse_queue_observer.add_observer( self )
-        parse_queue_observer.observe
+        parse_queue_observer.observe( options['limit'] )
       else
         logger.error "Unable to parse, not able to observe the parse queue"
       end

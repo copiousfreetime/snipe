@@ -36,6 +36,11 @@ module Snipe
         raise e
       end
 
+      def close
+        @connection.close
+        @connection = nil
+      end
+
       def logger
         Logging::Logger[self]
       end
