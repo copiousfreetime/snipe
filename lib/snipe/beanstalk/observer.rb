@@ -39,12 +39,17 @@ module Snipe
         @error_count    = 0
         @jobs_processed = 0
         @job_limit      = nil
+        @stopped        = false
       end
 
       def limits_reached?
         return true if error_count >= error_limit
         return true if job_limit && (jobs_processed >= job_limit)
-        return false
+        return @stopped
+      end
+
+      def stop
+        @stopped = true
       end
 
       # this loops forever and does not return until the error count is too much
@@ -53,7 +58,7 @@ module Snipe
         logger.info "Starting observation loop on #{name}"
         if limit then 
           @job_limit = limit
-          logger.info "  limiting to notifying #{job_limit} jobs"
+          logger.info "  limiting to processing #{job_limit} jobs"
         end
         loop do
           break if limits_reached?
@@ -71,14 +76,17 @@ module Snipe
           end
         end
 
-        logger.info "Stopping observation loop on #{name}"
+        logger.info "Stopping observation loop on #{name} : errors #{error_count} : jobs_processed #{jobs_processed}"
+        self.close
 
         if error_count >= error_limit then
-          msg = "Too many Errors (count : #{error_count}) observing #{cfg.connection}/#{cfg.name}"
+          msg = "Too many Errors (count : #{error_count}) observing #{name}"
           logger.fatal msg
           raise Snipe::Error, msg
         elsif job_limit && (jobs_processed >= job_limit ) then
           logger.info "  job limit of #{job_limit} reached"
+        elsif 
+          logger.info "  told to stop"
         end
       end
     end

@@ -24,7 +24,7 @@ module Snipe
         #c.verbose = true
       end
       @timer = ::Hitimes::Timer.new
-      @xml_ok = true
+      @xml_ok = false
     end
 
     def logger
@@ -43,11 +43,18 @@ module Snipe
     def fetch_str_from_url( url )
       curl.url = url
       curl.perform
-      if curl.response_code != 200 then
-        logger.error unzip( curl.body_str )
-        raise "Error : #{curl.response_code}"
+      body = unzip( curl.body_str )
+      case curl.response_code
+      when 200
+        body
+      when 400
+        raise "yup, exceeded limit"
+      else
+        if logger.debug? then
+          logger.debug "#{url} -> recieved response code #{curl.response_code}"
+        end
+        throw :skip_fetch
       end
-      unzip( curl.body_str )
     end
 
     # convert the url to the url that is needed for getting the html page
@@ -87,10 +94,14 @@ module Snipe
       end
 
       timer.stop
-      if timer.count % 100 == 0 then
-        logger.info timer.stats.to_hash.inspect
-      end
+      log_stats
       return t
+    end
+
+    def log_stats( force = false )
+      if force || (timer.count % 100 == 0) then
+        logger.info "Fetched #{timer.count} tweets in #{"%0.3f"% timer.sum} second at #{"%0.3f" % timer.rate} tweets / second"
+      end
     end
 
     def fetch_text_from_xml( tweet )
