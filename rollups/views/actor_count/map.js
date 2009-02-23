@@ -1,5 +1,5 @@
 function(doc) {
     if ( doc.actor ) {
-        emit( doc.actor, null );
+        emit( doc.actor, doc._id );
     }
 }
