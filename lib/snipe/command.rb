@@ -42,8 +42,9 @@ module Snipe
     def daemonize
       if options['daemonize'] then
         logger.info "Daemonizing #{command_name}"
-        ag = Daemons::ApplicationGroup.new( command_name, :dir      => Snipe::Paths.pid_path,
-                                                          :dir_mode => :normal )
+        ag = Daemons::ApplicationGroup.new( nil,
+                                           :dir=> Snipe::Paths.pid_path,
+                                           :dir_mode => :normal )
         ag.new_application( :mode => :none ).start
 
        # reopen all the logs

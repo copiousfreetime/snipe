@@ -133,7 +133,7 @@ module Snipe
         url = bucket_url( bucket_id )
         c = Curl::Easy.new( url )
         c.headers = self.headers
-        c.verbose = true
+        #c.verbose = true
         c.perform
         if c.response_code != 200 then
           logger.error unzip( c.body_str )
