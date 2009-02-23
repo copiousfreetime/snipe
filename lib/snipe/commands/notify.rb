@@ -12,6 +12,7 @@ module Snipe::Commands
     def run
       scraper = ::Snipe::Gnip::Scraper.new
       scraper.add_observer( self )
+      scraper.limit = options['limit'] 
       scraper.start
     end
 

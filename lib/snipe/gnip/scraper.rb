@@ -36,6 +36,9 @@ module Snipe
       attr_reader :password
       attr_reader :user_agent
 
+      attr_accessor :limit
+      attr_reader   :count
+
       include Observable
 
       # initialize with the username and password of the person connecting 
@@ -46,6 +49,8 @@ module Snipe
         @compressed = config.compressed
         @headers = nil
         @start_bucket = nil
+        @limit = nil
+        @count = 0
       end  
 
       # is the data stream compressed
@@ -79,6 +84,7 @@ module Snipe
       end
 
       def update_last_bucket_id( bucket_id )
+        @count += 1
         File.open( last_bucket_id_file, "wb" ) { |f| f.puts "#{bucket_id}" }
       end
 
@@ -165,21 +171,33 @@ module Snipe
             self.changed
             self.notify_observers( bucket_file )
           end
+          break if limit_reached?
         end
         return timer
       end       
+
+      def limit_reached?
+        if self.limit and ( self.count >= self.limit ) then
+          return true
+        end
+        return false
+      end
 
       def start
         current_bucket_id = self.start_bucket
         current_max_bucket_id = self.gnip_last_bucket_id
         logger.info "Gnip download service started"
+        if limit then
+          logger.info "  limiting to #{self.limit} downloads"
+        end
         loop do 
+          break if limit_reached?
           timer = download_batch(current_bucket_id, current_max_bucket_id)
           logger.info "Batch of #{timer.count} downloaded at #{timer.rate} bps"
           current_bucket_id = next_bucket_id( current_max_bucket_id )
           loop do
             current_max_bucket_id = self.gnip_last_bucket_id
-            break if current_max_bucket_id >= current_bucket_id
+            break if (current_max_bucket_id >= current_bucket_id) or limit_reached?
             sleep 60
           end
         end

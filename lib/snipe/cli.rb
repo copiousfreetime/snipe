@@ -32,6 +32,7 @@ module Snipe
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
+      mixin :option_limit
 
       run { Cli.run_command_with_params( 'notify', params ) }
     }
@@ -43,11 +44,12 @@ module Snipe
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
+      mixin :option_limit
 
       run { Cli.run_command_with_params( 'parse', params ) }
     }
 
-    mode( :stor ) {
+    mode( :store ) {
       description <<-txt
       Consume the activity events and store the resulting data into couchdb
       txt
@@ -55,6 +57,7 @@ module Snipe
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
+      mixin :option_limit
 
       run { Cli.run_command_with_params( 'store', params ) }
     }
@@ -85,6 +88,15 @@ module Snipe
         description "The verbosity of logging, one of [ #{::Logging::LNAMES.map {|l| l.downcase }.join(', ')} ]"
         argument :required
         validate { |l| %w[ debug info warn error fatal off ].include?( l.downcase ) }
+      end
+    end
+
+    mixin :option_limit do
+      option( 'limit' ) do
+        description "Only do N operations"
+        argument :required
+        validate { |l| Float(l).to_i }
+        cast :int
       end
     end
   }

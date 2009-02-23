@@ -55,7 +55,6 @@ describe Snipe::CouchDB::TweetStore do
     @store.save( @normal_t )
     @store.info['doc_count'].should == 1
     @normal_t["_id"].should_not be_nil
-
   end
 end
 
