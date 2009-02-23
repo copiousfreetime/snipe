@@ -58,3 +58,14 @@ Rake.application.tasks.each do |t|
   end 
 end
 
+desc "Push views to serve"
+task :view_push do
+  host = "http://copiousfreetime:playingwfire@playground.copiousfreetime.org:5984/tweets"
+  dir = Snipe::Paths.root_dir
+  Dir.chdir( dir ) do
+    cmd = "couchapp push rollups #{host}"
+    puts cmd
+   `#{cmd}`
+  end
+end
+
