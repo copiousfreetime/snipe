@@ -74,7 +74,6 @@ module Snipe
         }
         mps = notify_timer.count / timer.duration
 
-        logger.info "  --> Summary <--"
         logger.info "    notification : #{notify_timer.count} at #{"%0.3f" % notify_timer.rate} mps for a total of #{"%0.3f" % notify_timer.sum} seconds"
         logger.info "    total        : #{notify_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
         logger.info "Done parsing #{fname}"
