@@ -10,11 +10,19 @@ Emitting Queue Events:
 Consuming and inserting int Couchdb:
     - tweet model to hold data  @done(2009-02-22 01:24:40)
     - fetcher to go get the tweet from upstream @done(2009-02-22 01:25:27)
-    - submiter to take the tweet and put it into couchdb
-    - commandline program to loop over the beanstalkd queue until empty
+    - submiter to take the tweet and put it into couchdb @done(2009-02-23 21:46:11)
+    - commandline program to loop over the beanstalkd queue until empty @done(2009-02-23 21:46:13)
 
 Viewing:
-    - views in couchdb to show rollups
     - different databases for users ?
-    - couchapp
+    - views in couchdb to show rollups @done(2009-02-23 21:46:16)
+    - couchapp @done(2009-02-23 21:46:18)
+
+Other:
+    - change to have another queue between the tweet fetchers and the store
+    - change stages to:
+        - notify
+        - split
+        - scrape
+        - store
 
