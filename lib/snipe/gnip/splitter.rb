@@ -1,5 +1,5 @@
 require 'nokogiri'
-require 'snipe/gnip/document'
+require 'snipe/gnip/notification_document'
 require 'zlib'
 require 'snipe/beanstalk/queue'
 module Snipe
@@ -14,7 +14,7 @@ module Snipe
       end
 
       def self.default_opts
-        { :doc => Gnip::Document.new,
+        { :doc => Gnip::NotificationDocument.new,
           :split => :default }
       end
       

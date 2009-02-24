@@ -2,8 +2,9 @@ require File.expand_path( File.join( File.dirname( __FILE__ ),"..", "spec_helper
 
 require 'snipe'
 require 'snipe/couchdb/tweet_store'
-require 'snipe/couchdb/tweet'
+require 'snipe/tweet'
 
+__END__
 describe Snipe::CouchDB::TweetStore do
   before( :each ) do
     @normal  = { "text"=>"como que manda blips aqui? num sei.", 
@@ -14,7 +15,7 @@ describe Snipe::CouchDB::TweetStore do
                  "source"=>"DestroyTwitter",
                  "text" => "como que manda blips aqui? num sei."}
 
-    @normal_t = Snipe::CouchDB::Tweet.new( @normal )
+    @normal_t = Snipe::Tweet.new( @normal )
 
     @reply = { 
       "source"=>"twhirl", 
@@ -27,7 +28,7 @@ describe Snipe::CouchDB::TweetStore do
       "text" => "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"
     }
 
-    @reply_t = Snipe::CouchDB::Tweet.new( @reply )
+    @reply_t = Snipe::Tweet.new( @reply )
 
     @hashtag = { "source" => "web",
                  "actor" => "sophiabliu",
@@ -35,7 +36,7 @@ describe Snipe::CouchDB::TweetStore do
                  "at"     => "2009-01-14T01:25:25.000Z",
                  "url"    => "http://twitter.com/status/show/1117167788.xml",
                  "text"   => "yesterday's blanket of snow has now covered the burned scars of the #boulderfire" }
-    @hashtag_t = Snipe::CouchDB::Tweet.new( @hashtag )
+    @hashtag_t = Snipe::Tweet.new( @hashtag )
 
     #@store  = ::Snipe::CouchDB::TweetStore.new("spec_db")
   end

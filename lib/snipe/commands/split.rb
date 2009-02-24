@@ -9,12 +9,12 @@ module Snipe::Commands
     end
 
     def splitter
-      @splitter ||= Snipe::Gnip::Parser.new
+      @splitter ||= Snipe::Gnip::Splitter.new
     end
 
     # callec by the beanstalk observer when an item is pulled off the queue
     def update( fname )
-      splitter.splitter_gnip_notification( fname )
+      splitter.split_gnip_notification( fname )
     end
 
     def run

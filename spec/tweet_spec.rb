@@ -1,9 +1,25 @@
-require File.expand_path( File.join( File.dirname( __FILE__ ),"..", "spec_helper.rb"))
+require File.expand_path( File.join( File.dirname( __FILE__ ), "spec_helper.rb"))
 
 require 'snipe'
-require 'snipe/couchdb/tweet'
+require 'snipe/tweet'
 
-describe Snipe::CouchDB::Tweet do
+describe Snipe::Tweet::Fragment do
+  it "has initializes with a name" do
+    f = Snipe::Tweet::Fragment.new( 'blah' )
+    f.name.should == 'blah'
+  end
+
+  it "initializes with a name and an array which becomes a hash of properties" do
+    f = Snipe::Tweet::Fragment.new( 'blah', %w[ foo bar baz 42 ] )
+    f.name.should == 'blah'
+    f.attributes.size.should == 2
+    f.attributes['foo'].should == 'bar'
+    f.attributes['baz'].should == '42'
+  end
+
+end
+__END__
+describe Snipe::Tweet do
   before( :each ) do
     @normal  = { "text"=>"como que manda blips aqui? num sei.", 
             "actor"=>"copiousfreetime", 
@@ -13,7 +29,7 @@ describe Snipe::CouchDB::Tweet do
             "source"=>"DestroyTwitter",
             "text" => "como que manda blips aqui? num sei."}
 
-    @normal_t = Snipe::CouchDB::Tweet.new( @normal )
+    @normal_t = Snipe::Tweet.new( @normal )
 
     @reply = { "source"=>"twhirl", 
             "regarding"=>"http://twitter.com/statuses/show/1232640554.xml" ,
@@ -24,7 +40,7 @@ describe Snipe::CouchDB::Tweet do
             "at"=>"2009-02-21T00:36:54.000Z",
             "text" => "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"}
 
-    @reply_t = Snipe::CouchDB::Tweet.new( @reply )
+    @reply_t = Snipe::Tweet.new( @reply )
 
     @hashtag = { "source" => "web",
                  "actor" => "sophiabliu",
@@ -32,7 +48,7 @@ describe Snipe::CouchDB::Tweet do
                  "at"     => "2009-01-14T01:25:25.000Z",
                  "url"    => "http://twitter.com/status/show/1117167788.xml",
                  "text"   => "yesterday's blanket of snow has now covered the burned scars of the #boulderfire" }
-    @hashtag_t = Snipe::CouchDB::Tweet.new( @hashtag )
+    @hashtag_t = Snipe::Tweet.new( @hashtag )
   end
 
   it "extacts the id from the url " do

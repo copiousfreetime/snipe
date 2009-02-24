@@ -1,7 +1,8 @@
 require 'curb'
-require 'snipe/couchdb/tweet'
+require 'snipe/tweet'
 require 'nokogiri'
 require 'hitimes'
+require 'zlib'
 
 module Snipe
   class TweetFetcher
@@ -37,7 +38,7 @@ module Snipe
 
     def unzip( data )
       sio = StringIO.new( data )
-      Zlib::GzipReader.new( sio ).read
+      ::Zlib::GzipReader.new( sio ).read
     end
 
     def fetch_str_from_url( url )
@@ -60,8 +61,7 @@ module Snipe
     # convert the url to the url that is needed for getting the html page
     # instead of the xml
     def html_url_for( tweet )
-      num = File.basename( tweet.url, ".*" )
-      return "http://twitter.com/#{tweet.actor}/status/#{num}"
+      tweet.destination_url
     end
 
     def fetch_text_from_html( tweet )

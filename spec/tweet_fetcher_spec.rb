@@ -1,17 +1,20 @@
 require File.expand_path( File.join( File.dirname( __FILE__ ),"spec_helper.rb"))
 
 require 'snipe'
+require 'snipe/tweet'
 require 'snipe/tweet_fetcher'
 
 describe Snipe::TweetFetcher do
   before( :each ) do
+
     @cft = [ "actor" ,"copiousfreetime" ,
              "url"   ,"http://twitter.com/status/show/1221929390.xml",
-             "action","notice" ,
-             "at"    ,"2009-02-18T06:08:05.000Z" ,
+             "action","notice",
+             "at"    ,"2009-02-18T06:08:05.000Z",
+             "destinationurl", "http://twitter.com/copiousfreetime/status/1221929390",
              "source","twhirl" ]
 
-    @tweet = ::Snipe::CouchDB::Tweet.new( @cft )
+    @tweet = ::Snipe::Tweet.new( @cft )
     @fetcher = Snipe::TweetFetcher.new
   end
 

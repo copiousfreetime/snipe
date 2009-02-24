@@ -28,6 +28,7 @@ Snipe::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_dependency("daemons", "~> 1.0.10")
   spec.add_dependency("logging", "~> 0.9.6")
   spec.add_dependency("nokogiri", "~> 1.1.1" )
+  spec.add_dependency("orderedhash", "~> 0.0.6")
 
   # github
   spec.add_dependency("jchris-couchrest", "~> 0.12.6" )

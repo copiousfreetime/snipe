@@ -10,12 +10,12 @@ describe Snipe::Gnip::Splitter do
     splitter = ::Snipe::Gnip::Splitter.new( :notify => nil ) 
     splitter.split_gnip_notification( @gz_file )
     splitter.document.timer.stats.count.should == splitter.split_timer.count
-    splitter.split_timer.count.should == 1345
+    splitter.split_timer.count.should == 1495
   end
 
   it "Splitter.split_gnip_notifications" do
     splitter = Snipe::Gnip::Splitter.split_gnip_notification( @gz_file )
-    splitter.document.timer.stats.count.should == 1345
+    splitter.document.timer.stats.count.should == 1495
   end
 
   it "logs an error if unable to connect to the queue server" do

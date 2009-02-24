@@ -8,8 +8,8 @@ module Snipe::Commands
       @split_observer ||= Snipe::Beanstalk::Observer.split_observer
     end
     
-    def split_observer
-      @split_observer ||= Snipe::Beanstalk::Observer.split_observer
+    def publish_queue
+      @publish_queue ||= Snipe::Beanstalk::Queue.publish_queue
     end
 
     def tweet_store

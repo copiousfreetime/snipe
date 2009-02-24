@@ -3,5 +3,5 @@ require 'snipe'
 
 Snipe::Log.init
 gz_file = Snipe::Paths.spec_path( "data/sample.xml.gz" )
-Snipe::Gnip::Parser.parse_gnip_notification( gz_file )
+Snipe::Gnip::Splitter.split_gnip_notification( gz_file )
 
