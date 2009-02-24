@@ -3,9 +3,13 @@ require 'snipe/beanstalk/observer'
 require 'snipe/tweet_fetcher'
 
 module Snipe::Commands
-  class Store < Snipe::Command
-    def activity_queue_observer
-      @activity_queue_observer ||= Snipe::Beanstalk::Observer.activity_observer
+  class Scrape < Snipe::Command
+    def split_observer
+      @split_observer ||= Snipe::Beanstalk::Observer.split_observer
+    end
+    
+    def split_observer
+      @split_observer ||= Snipe::Beanstalk::Observer.split_observer
     end
 
     def tweet_store
@@ -48,9 +52,9 @@ module Snipe::Commands
     end
 
     def run
-      if activity_queue_observer then
-        activity_queue_observer.add_observer( self )
-        activity_queue_observer.observe( options['limit'] )
+      if split_observer then
+        split_observer.add_observer( self )
+        split_observer.observe( options['limit'] )
       else
         logger.error "Unable to parse, not able to observe the activity queue"
       end

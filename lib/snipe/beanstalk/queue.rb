@@ -7,12 +7,16 @@ module Snipe
 
       # handles for the standard queues, only set them if a connection is
       # successful
-      def self.activity_queue
-        @activity ||= Queue.load_queue( Configuration.for('gnip').activity_queue ) 
+      def self.split_queue
+        @split ||= Queue.load_queue( Configuration.for('queues').split )
       end
 
-      def self.parse_queue
-        @parse ||= Queue.load_queue( Configuration.for('gnip').parse_queue )
+      def self.scrape_queue
+        @scrape ||= Queue.load_queue( Configuration.for('queues').scrape ) 
+      end
+      
+      def self.publish_queue
+        @publish ||= Queue.load_queue( Configuration.for('queues').publish ) 
       end
 
       def self.load_queue( cfg )

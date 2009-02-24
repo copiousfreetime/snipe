@@ -23,9 +23,9 @@ end
 
 module Snipe
   module Gnip
-    class Scraper
+    class Consumer
       def self.base_url
-        "https://prod.gnipcentral.com/publishers/twitter/notification/"
+        @base_url ||= Configuration.for('gnip').notification_url
       end
 
       def self.start_bucket
@@ -42,7 +42,7 @@ module Snipe
       include Observable
 
       # initialize with the username and password of the person connecting 
-      def initialize( config = Configuration.for('gnip').scraper )
+      def initialize( config = Configuration.for('gnip') )
         @username = config.connection.username
         @password = config.connection.password
         @user_agent = config.user_agent
@@ -68,7 +68,7 @@ module Snipe
           if File.exist?( last_bucket_id_file ) then
             @start_bucket = get_last_bucket_id
           else
-            @start_bucket = Scraper.start_bucket
+            @start_bucket = Consumer.start_bucket
           end
         end
         logger.info "Start bucket is #{@start_bucket}"
@@ -89,7 +89,7 @@ module Snipe
       end
 
       def bucket_url( bucket_id )
-        File.join( Scraper.base_url, "#{bucket_id}.xml" )
+        File.join( Consumer.base_url, "#{bucket_id}.xml" )
       end
 
 

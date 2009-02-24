@@ -8,13 +8,16 @@ module Snipe
     class Observer < Queue
       include Observable
 
-      # handles for the standard observers
-      def self.activity_observer
-        @activity ||= Observer.new( Beanstalk::Queue.activity_queue )
+      def self.split_observer
+        @split ||= Observer.new( Beanstalk::Queue.split_queue )
+      end
+      
+      def self.scrape_observer
+        @scrape ||= Observer.new( Beanstalk::Queue.scrape_queue )
       end
 
-      def self.parse_observer
-        @parse ||= Observer.new( Beanstalk::Queue.parse_queue )
+      def self.publish_observer
+        @publish ||= Observer.new( Beanstalk::Queue.publish_queue )
       end
 
       # the maximum number of errors to hit before stopping the connection to

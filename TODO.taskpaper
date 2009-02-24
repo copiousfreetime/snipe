@@ -21,8 +21,21 @@ Viewing:
 Other:
     - change to have another queue between the tweet fetchers and the store
     - change stages to:
-        - notify
+        - gnip/scraper.rb -> gnip/consume.rb
+        - notify -> 'consume'
         - split
-        - scrape
-        - store
+        - scrape 
+        - publish
+    - is scraping twitter okay according to twitter terms of service
+    - change queues to  @done(2009-02-23 23:13:48)
+        - split @done(2009-02-23 23:13:49)
+        - scrape @done(2009-02-23 23:13:51)
+        - publish @done(2009-02-23 23:13:52)
+
+Gnip v2.1
+    - switch to that notification stream
+    - start publishing
+
+
+20:53:24
 

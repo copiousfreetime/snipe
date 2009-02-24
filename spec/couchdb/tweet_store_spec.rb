@@ -7,23 +7,25 @@ require 'snipe/couchdb/tweet'
 describe Snipe::CouchDB::TweetStore do
   before( :each ) do
     @normal  = { "text"=>"como que manda blips aqui? num sei.", 
-            "actor"=>"copiousfreetime", 
-            "url"=>"http://twitter.com/statuses/show/1232707799.xml", 
-            "action"=>"notice", 
-            "at"=>"2009-02-19T23:11:27.000Z", 
-            "source"=>"DestroyTwitter",
-            "text" => "como que manda blips aqui? num sei."}
+                 "actor"=>"copiousfreetime", 
+                 "url"=>"http://twitter.com/statuses/show/1232707799.xml", 
+                 "action"=>"notice", 
+                 "at"=>"2009-02-19T23:11:27.000Z", 
+                 "source"=>"DestroyTwitter",
+                 "text" => "como que manda blips aqui? num sei."}
 
     @normal_t = Snipe::CouchDB::Tweet.new( @normal )
 
-    @reply = { "source"=>"twhirl", 
-            "regarding"=>"http://twitter.com/statuses/show/1232640554.xml" ,
-            "to"=>"BullishBeauty",
-            "url"=>"http://twitter.com/statuses/show/1232709881.xml",
-            "action"=>"notice", 
-            "actor"=>"JeffreyLin",
-            "at"=>"2009-02-21T00:36:54.000Z",
-            "text" => "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"}
+    @reply = { 
+      "source"=>"twhirl", 
+      "regarding"=>"http://twitter.com/statuses/show/1232640554.xml" ,
+      "to"=>"BullishBeauty",
+      "url"=>"http://twitter.com/statuses/show/1232709881.xml",
+      "action"=>"notice", 
+      "actor"=>"JeffreyLin",
+      "at"=>"2009-02-21T00:36:54.000Z",
+      "text" => "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"
+    }
 
     @reply_t = Snipe::CouchDB::Tweet.new( @reply )
 
@@ -35,11 +37,11 @@ describe Snipe::CouchDB::TweetStore do
                  "text"   => "yesterday's blanket of snow has now covered the burned scars of the #boulderfire" }
     @hashtag_t = Snipe::CouchDB::Tweet.new( @hashtag )
 
-    @store  = ::Snipe::CouchDB::TweetStore.new("spec_db")
+    #@store  = ::Snipe::CouchDB::TweetStore.new("spec_db")
   end
 
   after( :each ) do 
-    @store.delete!
+    #@store.delete!
   end
 
   it "has a default server" do
@@ -47,14 +49,18 @@ describe Snipe::CouchDB::TweetStore do
   end
 
   it "creates the db if it doesn't exist" do
-    @store.info["db_name"].should == "spec_db" 
+    pending "until couch is used again " do
+      @store.info["db_name"].should == "spec_db" 
+    end
   end
 
   it "stores a document" do
-    @normal_t["_id"].should be_nil
-    @store.save( @normal_t )
-    @store.info['doc_count'].should == 1
-    @normal_t["_id"].should_not be_nil
+    pending "until couch is used again " do
+      @normal_t["_id"].should be_nil
+      @store.save( @normal_t, false )
+      @store.info['doc_count'].should == 1
+      @normal_t["_id"].should_not be_nil
+    end
   end
 end
 

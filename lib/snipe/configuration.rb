@@ -41,34 +41,49 @@ Configuration.for("logging" ) do
 end
 
 #-----------------------------------------------------------------------
-# Configuration for all things related to gnip
+# Configuration for all the queues involved
 #-----------------------------------------------------------------------
-Configuration.for("gnip") do
-  # The connection string for the gnip beanstalk queue dealing with activity
+Configuration.for("queues") do
+  # The connection string for the gnip beanstalk queue dealing with split events
+  split {
+    name       "split"
+    connection "localhost:11300"
+    error_limit 20
+  }
+
+  # The connection string for the gnip beanstalk queue dealing with scrape 
   # events
   #
-  activity_queue {
-    name       "gnip-activity"
+  scrape {
+    name       "scrape"
     connection "localhost:11300"
     error_limit 20
   }
 
-  # The connection string for the gnip beanstalk queue dealing with parse events
-  parse_queue {
-    name       "gnip-parse"
+  # The connection information for the beanstalk queue for publish events
+  #
+  publish {
+    name       "publish"
     connection "localhost:11300"
     error_limit 20
   }
 
-  # The scraper connection information
-  scraper {
-    connection {
-      username "jeremy@copiousfreetime.org"
-      password "red1fish"
-    }
-    user_agent "Snipe/#{Snipe::Version}"
-    compressed true
+end
+
+#-----------------------------------------------------------------------
+# Configuration for all things related to gnip
+#-----------------------------------------------------------------------
+Configuration.for('gnip') do
+  # The consumer connection information
+  connection {
+    username "jeremy@copiousfreetime.org"
+    password "red1fish"
   }
+
+  user_agent        "Snipe/#{Snipe::Version}"
+  compressed        true
+  notification_url  "https://demo-v21.gnip.com/gnip/publishers/twitter/notification/"
+  
 end
 
 

@@ -103,6 +103,7 @@ module Snipe
 end
 
 require 'snipe/commands/setup'
-require 'snipe/commands/notify'
-require 'snipe/commands/parse'
-require 'snipe/commands/store'
+require 'snipe/commands/consume'
+require 'snipe/commands/split'
+require 'snipe/commands/scrape'
+#require 'snipe/commands/publish'

@@ -24,9 +24,10 @@ module Snipe
       run { Cli.run_command_with_params( 'setup', params ) }
     }
 
-    mode( :notify ) {
+    mode( :consume ) {
       description <<-txt
-      Download the notification stream from Gnip.
+      Consume the notification stream from Gnip and publish this event 
+      to the split queue.
       txt
 
       mixin :option_home
@@ -34,24 +35,62 @@ module Snipe
       mixin :option_daemonize
       mixin :option_limit
 
-      run { Cli.run_command_with_params( 'notify', params ) }
+      run { Cli.run_command_with_params( 'consume', params ) }
     }
 
-    mode( :parse ) {
+    mode( :split ) {
       description <<-txt
-      Parse the notification stream downloaded by 'notify' and emit activity events.
+      Split the notification stream downloaded by 'consume' into 
+      into individual activity events.
       txt
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
       mixin :option_limit
 
-      run { Cli.run_command_with_params( 'parse', params ) }
+      run { Cli.run_command_with_params( 'split', params ) }
+    }
+
+    mode( :scrape ) {
+      description <<-txt
+      Scrape the activity events and push the resulting data 
+      to the publish queue.
+      txt
+      
+      mixin :option_home
+      mixin :option_log_level
+      mixin :option_daemonize
+      mixin :option_limit
+
+      run { Cli.run_command_with_params( 'scrape', params ) }
+    }
+
+    mode( :publish ) {
+      description <<-txt
+      Publish the fully inflated activity events to Gnip
+      txt
+
+      mixin :option_home
+      mixin :option_log_level
+      mixin :option_daemonize
+      mixin :option_limit
+
+      option( 'batch-size' ) do
+        description "The number of activity events to bundle into one batch"
+        argument :required
+        cast :int
+        default 1
+      end
+ 
+      run { Cli.run_command_with_params( 'publish', params ) }
+
     }
 
     mode( :store ) {
       description <<-txt
       Consume the activity events and store the resulting data into couchdb
+
+      [ Currently not used ]
       txt
 
       mixin :option_home
