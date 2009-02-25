@@ -42,6 +42,6 @@ describe Snipe::Gnip::Splitter do
     end
     splitter = ::Snipe::Gnip::Splitter.new( :split => DeadQueue.new )
     splitter.split_gnip_notification( @gz_file )
-    splitter.split.count.should == 1345
+    splitter.split.count.should == 1495
   end
 end

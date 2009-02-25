@@ -12,10 +12,6 @@ module Snipe::Commands
       @publish_queue ||= Snipe::Beanstalk::Queue.publish_queue
     end
 
-    def tweet_store
-      @tweet_store ||= Snipe::CouchDB::TweetStore.new
-    end
-
     def fetcher
       unless defined? @fetcher
         @fetcher = Snipe::TweetFetcher.new
@@ -35,7 +31,6 @@ module Snipe::Commands
 
     def shutdown
       fetcher.log_stats( true )
-      tweet_store.flush
       log_stats( true )
     end
 
@@ -45,7 +40,7 @@ module Snipe::Commands
       timer.measure { 
         catch(:skip_fetch) do
           tweet.text = fetcher.fetch_text( tweet )
-          tweet_store.save( tweet )
+          publish_queue.put( tweet )
         end
       }
       log_stats

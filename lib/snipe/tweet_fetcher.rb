@@ -61,7 +61,7 @@ module Snipe
     # convert the url to the url that is needed for getting the html page
     # instead of the xml
     def html_url_for( tweet )
-      tweet.destination_url
+      tweet.destinationurl
     end
 
     def fetch_text_from_html( tweet )

@@ -18,36 +18,35 @@ describe Snipe::Tweet::Fragment do
   end
 end
 
-__END__
 describe Snipe::Tweet do
   before( :each ) do
-    @normal  = { "text"=>"como que manda blips aqui? num sei.", 
-            "actor"=>"copiousfreetime", 
-            "url"=>"http://twitter.com/statuses/show/1232707799.xml", 
-            "action"=>"notice", 
-            "at"=>"2009-02-19T23:11:27.000Z", 
-            "source"=>"DestroyTwitter",
-            "text" => "como que manda blips aqui? num sei."}
+    @normal  = [ "text","como que manda blips aqui? num sei.", 
+            "actor","copiousfreetime", 
+            "url","http://twitter.com/statuses/show/1232707799.xml", 
+            "action","notice", 
+            "at","2009-02-19T23:11:27.000Z", 
+            "source","DestroyTwitter",
+            "text" , "como que manda blips aqui? num sei."]
 
     @normal_t = Snipe::Tweet.new( @normal )
 
-    @reply = { "source"=>"twhirl", 
-            "regarding"=>"http://twitter.com/statuses/show/1232640554.xml" ,
-            "to"=>"BullishBeauty",
-            "url"=>"http://twitter.com/statuses/show/1232709881.xml",
-            "action"=>"notice", 
-            "actor"=>"JeffreyLin",
-            "at"=>"2009-02-21T00:36:54.000Z",
-            "text" => "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"}
+    @reply = [ "source","twhirl", 
+            "regardingurl","http://twitter.com/statuses/show/1232640554.xml" ,
+            "to","BullishBeauty",
+            "url","http://twitter.com/statuses/show/1232709881.xml",
+            "action","notice", 
+            "actor","JeffreyLin",
+            "at","2009-02-21T00:36:54.000Z",
+            "text" , "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"]
 
     @reply_t = Snipe::Tweet.new( @reply )
 
-    @hashtag = { "source" => "web",
-                 "actor" => "sophiabliu",
-                 "action" => "notice",
-                 "at"     => "2009-01-14T01:25:25.000Z",
-                 "url"    => "http://twitter.com/status/show/1117167788.xml",
-                 "text"   => "yesterday's blanket of snow has now covered the burned scars of the #boulderfire" }
+    @hashtag = [ "source" , "web",
+                 "actor" , "sophiabliu",
+                 "action" , "notice",
+                 "at"     , "2009-01-14T01:25:25.000Z",
+                 "url"    , "http://twitter.com/status/show/1117167788.xml",
+                 "text"   , "yesterday's blanket of snow has now covered the burned scars of the #boulderfire" ]
     @hashtag_t = Snipe::Tweet.new( @hashtag )
   end
 
@@ -60,7 +59,7 @@ describe Snipe::Tweet do
   end
 
   it "has a reply url" do
-    @reply_t.regarding.should == "http://twitter.com/statuses/show/1232640554.xml"
+    @reply_t.regardingurl.should == "http://twitter.com/statuses/show/1232640554.xml"
   end
 
   it "has a created time" do

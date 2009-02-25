@@ -12,30 +12,37 @@ module Snipe
         @name       = name
         @attributes = attributes.empty? ? {} : Hash[ *attributes ]
         @children   = []
-        @text       = StringIO.new
+        @text       = []
       end
 
       def add_text( x )
-        @text.write( x )
+        @text << x
       end
 
       def text
-        @text.string
+        @text.join('')
       end
     end
 
 
     # initialize a tweet from a fragment this is typically done from a Gnip
     # Document
-    attr_reader :fragments
+    attr_reader   :fragments
+    attr_accessor :text
+
     def initialize( array = [] )
       @fragments = OrderedHash.new
+      @text      = nil
       unless array.empty? 
         ohash = OrderedHash[ *array ]
         ohash.each_pair do |k,v|
+          next if k == 'text'
           f = Fragment.new( k )
           f.add_text( v )
           add_fragment( f )
+        end
+        if ohash['text'] then
+          @text = ohash['text']
         end
       end
     end
@@ -56,8 +63,26 @@ module Snipe
       fragments['url'].text
     end
 
-    def destination_url
-      fragments['destinationurl'].text
+    def at
+      fragments['at'].text
+    end
+
+
+    def collect_fragment_text( f )
+      case f
+      when Fragment
+        f.text
+      else
+        f.collect { |f| f.text }
+      end
+    end
+
+    %w[ source keyword regardingurl destinationurl ].each do |f|
+      module_eval <<-code
+      def #{f}
+        collect_fragment_text( fragments['#{f}'] )
+      end
+      code
     end
 
     def inflate_others
@@ -67,7 +92,7 @@ module Snipe
     end
 
     def tweet_id
-      self['tweet_id'] ||= ::File.basename( self['url'], ".*" )
+      @tweet_id ||= ::File.basename( self.url, ".*" )
     end
 
     def tokens
@@ -75,17 +100,18 @@ module Snipe
     end
 
     def mentioning
-      self['mentioning'] ||= tokens.find_all { |t| t[0] == 64 } # look for @
+      @mentioning ||= tokens.find_all { |t| t[0] == 64 } # look for @
     end
 
     def hashtags
-      self['hashtags'] ||= tokens.find_all { |t| t[0] == 35 } # look for #
+      @hashtags ||= tokens.find_all { |t| t[0] == 35 } # look for #
     end
 
   private
     def purge_token_based_fields
       @tokens = nil
-      %w[ mentioning hashtags ].each { |k| delete(k) }
+      @hashtags = nil
+      @mentioning =nil
     end
   end
 end
