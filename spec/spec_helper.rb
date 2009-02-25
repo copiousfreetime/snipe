@@ -40,11 +40,40 @@ module Spec
       Log.io.string
     end
   end
+
+  # take_less_than matcher from Thin
+  module Matchers
+    class TakeLessThan
+      def initialize(time)
+        @time = time
+      end
+
+      def matches?(proc)
+        Timeout.timeout(@time) { proc.call }
+        true
+      rescue Timeout::Error
+        false 
+      end
+
+      def failure_message(negation=nil)
+    "should#{negation} take less then #{@time} sec to run"
+      end
+
+      def negative_failure_message
+        failure_message ' not'
+      end
+    end
+
+    def take_less_than(time)
+      TakeLessThan.new(time)
+    end 
+  end
 end
 
-
 Spec::Runner.configure do |config|
-  include Spec::Helpers
+  config.include Spec::Helpers
+  config.include Spec::Matchers
+
   config.before do
     Spec::Log.io.rewind
     Spec::Log.io.truncate( 0 )

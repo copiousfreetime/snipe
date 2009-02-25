@@ -1,4 +1,5 @@
 require 'snipe'
+require 'snipe/daemonizable'
 
 module Snipe
   # The Command is the base class for any class that wants to implement a
@@ -21,6 +22,8 @@ module Snipe
   class Command
     class Error < ::Snipe::Error; end
 
+    include Daemonizable
+
     def self.command_name
       name.split("::").last.downcase
     end
@@ -42,6 +45,7 @@ module Snipe
     def daemonize
       if options['daemonize'] then
         logger.info "Daemonizing #{command_name}"
+
         ag = Daemons::ApplicationGroup.new( nil,
                                            :dir=> Snipe::Paths.pid_path,
                                            :dir_mode => :normal )
@@ -50,6 +54,7 @@ module Snipe
        # reopen all the logs
         Snipe::Log.init
         logger.info "Running as a daemon"
+        
       end
     end
 

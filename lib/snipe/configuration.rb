@@ -24,7 +24,7 @@ end
 Configuration.for("logging" ) do
   # the default minimum logging level.
   # The leve should be one of : debug, info, warn, error, fatal
-  level     "info"
+  level     "debug"
 
   # the directory into which logs will be written, leaving this as nil will make
   # the default be used.  The default dirname is the 'log' directory below the
