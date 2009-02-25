@@ -64,12 +64,12 @@ module Snipe
       end
       begin
         cmd  = Command.find( command_name ).new( @options )
-        cmd.daemonize
+        cmd.daemonize if options['daemonize']
         setup_signal_handling( cmd )
         cmd.before
         cmd.run
       rescue => e
-        logger.error "while running #{command_name} : #{e.message}"
+        logger.error "while running #{command_name} : #{e.message} (check logs for backtrace)"
         e.backtrace.each do |l|
           logger.debug l
         end

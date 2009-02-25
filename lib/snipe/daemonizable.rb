@@ -67,8 +67,13 @@ module Snipe
       
       Dir.chdir(pwd)
       
-      write_pid_file
+        
+      # reopen all the logs
+      Snipe::Log.init
+      logger.info "Running as a daemon"
    
+      write_pid_file
+
       at_exit do
         Daemonizable.logger.info "Exiting!"
         remove_pid_file
@@ -132,10 +137,12 @@ module Snipe
     end
 
     def write_pid_file
+      pid = Process.pid
+      @pid_file += ".#{pid}"
       Daemonizable.logger.info "Writing PID to #{@pid_file}"
-      FileUtils.mkdir_p File.dirname(@pid_file)
-      open(@pid_file,"w") { |f| f.write(Process.pid) }
-      File.chmod(0644, @pid_file)
+      FileUtils.mkdir_p File.dirname( @pid_file )
+      open( @pid_file,"w" ) { |f| f.write( pid ) }
+      File.chmod( 0644, @pid_file )
     end
 
     # If PID file is stale, remove it.
