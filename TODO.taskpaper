@@ -21,12 +21,16 @@ Viewing:
 Other:
     - change to have another queue between the tweet fetchers and the store
     - change stages to:
-        - gnip/scraper.rb -> gnip/consume.rb
-        - notify -> 'consume'
-        - split
-        - scrape 
+        - gnip/scraper.rb -> gnip/consume.rb @done(2009-02-25 01:59:24)
+        - notify -> 'consume' @done(2009-02-25 01:59:26)
+        - split @done(2009-02-25 01:59:27)
+        - scrape -- start here, making sure the scrape command is all good
+            - have counters for the other errors that are retrieved.
         - publish
-    - is scraping twitter okay according to twitter terms of service
+            - have a gnip publication document
+            - publish to multiple locations, one for rollowing up metrics( couch
+              ? )
+    - is scraping twitter okay according to twitter terms of service @done(2009-02-25 01:59:31)
     - change queues to  @done(2009-02-23 23:13:48)
         - split @done(2009-02-23 23:13:49)
         - scrape @done(2009-02-23 23:13:51)
