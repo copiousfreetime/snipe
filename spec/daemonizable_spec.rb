@@ -28,9 +28,6 @@ require 'snipe/daemonizable'
 class TestServer
   include Snipe::Daemonizable
   
-  def stop
-  end
-  
   def name
     'Snipe server'
   end
@@ -43,9 +40,18 @@ describe 'Daemonizable' do
   end
   
   before :each do
+    FileUtils.mkdir_p Snipe::Paths.pid_path
     @server = TestServer.new
     @server.pid_file = @pid_file
     @pid = nil
+  end
+
+  after( :each ) do
+    FileUtils.rm_f File.join( Snipe::Paths.pid_path, "*.pid" )
+    if File.exist?( Snipe::Paths.log_path( "snipe.log" ) ) then
+      #puts IO.read( Snipe::Paths.log_path( "snipe.log") )
+      File.delete( Snipe::Paths.log_path( "snipe.log" ) )
+    end
   end
   
   it 'should have a pid file' do
@@ -62,12 +68,12 @@ describe 'Daemonizable' do
   it 'should create a pid file' do
     @pid = fork do
       @server.daemonize
-      sleep 2
+      sleep 1
     end
-   
-    sleep 1
+ 
+    sleep 0.25
     Process.wait(@pid)
-    File.exist?(@server.pid_file).should be_true
+    File.exist?( @server.pid_file ).should be_true
     @pid = @server.pid
 
     lambda do
@@ -84,8 +90,11 @@ describe 'Daemonizable' do
     server_should_start_in_less_than 3
     
     @pid = @server.pid
-  
-    TestServer.kill(@server.pid_file, 1)
+
+    Process.should be_running( @pid )
+    File.exist?(@server.pid_file).should be_true
+
+    TestServer.kill(@server.pid_file, 2)
   
     File.exist?(@server.pid_file).should be_false
   end
@@ -93,13 +102,14 @@ describe 'Daemonizable' do
   it 'should force kill process in pid file' do
     @pid = fork do
       @server.daemonize
-      loop { sleep 3 }
+      loop { sleep 0.3 }
     end
   
-    server_should_start_in_less_than 3
+    server_should_start_in_less_than 1
     
     @pid = @server.pid
   
+    File.exist?(@server.pid_file).should be_true
     TestServer.kill(@server.pid_file, 0)
   
     File.exist?(@server.pid_file).should be_false
@@ -107,7 +117,6 @@ describe 'Daemonizable' do
   
   it 'should send kill signal if timeout' do
     @pid = fork do
-      @server.should_receive(:stop) # pretend we cannot handle the INT signal
       @server.daemonize
       sleep 5
     end
@@ -116,6 +125,7 @@ describe 'Daemonizable' do
     
     @pid = @server.pid
   
+    File.exist?(@server.pid_file).should be_true
     TestServer.kill(@server.pid_file, 1)
     
     sleep 1
@@ -141,6 +151,7 @@ describe 'Daemonizable' do
   it "should should delete pid file if stale" do
     # Create a file w/ a PID that does not exist
     File.open(@server.pid_file, 'w') { |f| f << 999999999 }
+    File.exist?( @server.pid_file ).should be_true
     
     @server.send(:remove_stale_pid_file)
     
@@ -154,7 +165,12 @@ describe 'Daemonizable' do
   end
   
   private
-    def server_should_start_in_less_than(sec=10)
-      proc { sleep 0.1 until File.exist?(@server.pid_file) }.should take_less_than(10)
+    def server_should_start_in_less_than(sec = 5)
+      lambda do 
+        loop do 
+          sleep 0.1
+          break if File.exist?( @server.pid_file )
+        end
+      end.should take_less_than( sec )
     end
 end

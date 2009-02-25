@@ -16,8 +16,8 @@ describe Snipe::Tweet::Fragment do
     f.attributes['foo'].should == 'bar'
     f.attributes['baz'].should == '42'
   end
-
 end
+
 __END__
 describe Snipe::Tweet do
   before( :each ) do

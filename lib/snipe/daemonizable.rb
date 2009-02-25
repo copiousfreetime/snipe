@@ -66,11 +66,10 @@ module Snipe
       Daemonize.daemonize
       
       Dir.chdir(pwd)
-      
         
       # reopen all the logs
       Snipe::Log.init
-      logger.info "Running as a daemon"
+      Daemonizable.logger.info "Running as a daemon"
    
       write_pid_file
 
@@ -103,7 +102,6 @@ module Snipe
           Timeout.timeout(timeout) do
             sleep 0.1 while Process.running?(pid)
           end
-          Daemonizable.logger.info ""
         else
           $stderr.puts "Can't stop process, no PID found in #{pid_file}"
         end
@@ -137,11 +135,9 @@ module Snipe
     end
 
     def write_pid_file
-      pid = Process.pid
-      @pid_file += ".#{pid}"
       Daemonizable.logger.info "Writing PID to #{@pid_file}"
       FileUtils.mkdir_p File.dirname( @pid_file )
-      open( @pid_file,"w" ) { |f| f.write( pid ) }
+      open( @pid_file,"w" ) { |f| f.write( Process.pid ) }
       File.chmod( 0644, @pid_file )
     end
 

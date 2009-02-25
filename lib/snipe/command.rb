@@ -31,7 +31,11 @@ module Snipe
     attr_reader :options
     def initialize( opts = {} )
       @options = opts
-      @pid_file = Snipe::Paths.pid_path( "#{command_name}.pid" )
+      n = options['instance-num'] 
+      pid_parts = %w[ command_name ]
+      pid_parts << options['instance-num'] if options['instance-num']
+      pid_parts << "pid"
+      @pid_file = Snipe::Paths.pid_path( pid_parts.join )
     end
 
     def command_name

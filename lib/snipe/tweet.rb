@@ -2,7 +2,6 @@ require 'orderedhash'
 module Snipe
   class Tweet
 
-
     # used to build up a tweet from parts
     class Fragment 
       attr_reader   :name
