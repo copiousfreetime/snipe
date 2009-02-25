@@ -32,10 +32,10 @@ module Snipe
     def initialize( opts = {} )
       @options = opts
       n = options['instance-num'] 
-      pid_parts = %w[ command_name ]
+      pid_parts = [ command_name ]
       pid_parts << options['instance-num'] if options['instance-num']
       pid_parts << "pid"
-      @pid_file = Snipe::Paths.pid_path( pid_parts.join )
+      @pid_file = Snipe::Paths.pid_path( pid_parts.join('.') )
     end
 
     def command_name
