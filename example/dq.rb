@@ -1,7 +1,8 @@
+require 'rubygems'
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'snipe'
 
-q = Snipe::Beanstalk::Queue.activity_queue
+q = Snipe::Beanstalk::Queue.split_queue
 #q = Snipe::Beanstalk::Queue.parse_queue
 
 puts "Listening for events on #{q.name}"

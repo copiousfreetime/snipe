@@ -5,7 +5,7 @@ require 'snipe/beanstalk/queue'
 module Snipe
   module Gnip
     class Splitter < ::Nokogiri::XML::SAX::Parser
-      attr_accessor :split
+      attr_accessor :scrape
 
       def self.split_gnip_notification( fname )
         p = self.new
@@ -15,7 +15,7 @@ module Snipe
 
       def self.default_opts
         { :doc => Gnip::NotificationDocument.new,
-          :split => :default }
+          :scrape => :default }
       end
       
       def logger
@@ -27,30 +27,30 @@ module Snipe
         doc = opts.delete( :doc )
 
         super( doc )
-        case bean_opt = opts[:split]
+        case bean_opt = opts[:scrape]
         when nil
-          @split = nil
+          @scrape = nil
         when :default
-          @split = Snipe::Beanstalk::Queue.split_queue rescue nil
+          @scrape = Snipe::Beanstalk::Queue.scrape_queue rescue nil
         else
           if bean_opt.respond_to?( :put ) then
-            @split = bean_opt
+            @scrape = bean_opt
           else
-            logger.error "the value given for :split does not respond to put() => #{bean_opt.inspect}" 
-            @split = nil
+            logger.error "the value given for :scrape does not respond to put() => #{bean_opt.inspect}" 
+            @scrape = nil
           end
         end
-        logger.info "Connected to beanstalkd server #{split.name}" if can_split?
+        logger.info "Connected to beanstalkd server #{scrape.name}" if can_scrape?
 
         self.document.add_observer( self )
       end
 
-      def can_split?
-        split && split.connected?
+      def can_scrape?
+        scrape && scrape.connected?
       end
 
-      def split_timer
-        @split_timer ||= ::Hitimes::Timer.new
+      def scrape_timer
+        @scrape_timer ||= ::Hitimes::Timer.new
       end
 
       def timer
@@ -60,8 +60,8 @@ module Snipe
       # only registered as an observer if there is a beanstalk server
       def update( *args )
         tweet = args.first
-        split_timer.measure {
-          split.put( Marshal.dump( tweet ) ) if can_split?
+        scrape_timer.measure {
+          scrape.put( Marshal.dump( tweet ) ) if can_scrape?
         }
       end
 
@@ -72,10 +72,10 @@ module Snipe
           parse_io( io )
           io.close
         }
-        mps = split_timer.count / timer.duration
+        mps = scrape_timer.count / timer.duration
 
-        logger.info "    notification : #{split_timer.count} at #{"%0.3f" % split_timer.rate} mps for a total of #{"%0.3f" % split_timer.sum} seconds"
-        logger.info "    total        : #{split_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
+        logger.info "    notification : #{scrape_timer.count} at #{"%0.3f" % scrape_timer.rate} mps for a total of #{"%0.3f" % scrape_timer.sum} seconds"
+        logger.info "    total        : #{scrape_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
         logger.info "Done parsing #{fname}"
       end
     end

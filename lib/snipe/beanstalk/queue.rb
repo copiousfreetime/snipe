@@ -1,4 +1,5 @@
 require 'beanstalk-client'
+require 'snipe/configuration'
 
 module Snipe
   module Beanstalk
