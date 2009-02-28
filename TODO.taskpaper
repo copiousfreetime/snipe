@@ -43,6 +43,71 @@ Other:
         - scrape @done(2009-02-23 23:13:51)
         - publish @done(2009-02-23 23:13:52)
 
+
+        
+Tables:
+    Dates: 
+        - key 'date/#{jd}'
+        - type 'Date'
+        - jd #{jd}
+        - ord "yyyy-ddd"
+        - iso "yyyy-mm-dd"
+
+    Tweets:
+        - key = 'tweet/#{status_id}' where id is item minux xml
+        - type 'Tweet'
+        - status_id
+        - author (username)
+        - text ( full text )
+        - url
+        - destinationurl
+        - source
+        - at
+        - author_snapshot ( 'author/#{username}/#{jd}' )
+        - post_date    ( julan day of at )
+        - post_at      ( julian time of at )
+        - split_at     ( julian time )
+        - scrape_at    ( julian time )
+        - store_at     ( julian time )
+        - publish_at   ( julian time )
+        - tags (csv)
+        - mentions (csv)
+        - urls (csv)
+
+    Authors:
+        - id = 'author/#{username}'
+        - type 'Author'
+        - username 
+        - name
+        - location
+        - website
+        - bio
+        - picture_url
+        - follower_count
+        - following_count
+        - update_count
+        - first_snap_date( julian day)
+        - snap_date      ( julian day )
+        - snap_at        ( julian time )
+
+    AuthorSnapshots:
+        - id = 'author/#{username}/snapshot/#{jd}
+        - type 'AuthorSnapshot'
+        - snap_date (  jd )
+        - snap_at ( julian time )
+        - everything else from Authors
+
+    Follows:
+        - id = 'author/#{username}/follows/#{username}'
+        - 
+        - type 'Follow'
+        - first_snap_date
+        - last_snap_date
+        - is_current
+
+
+
+        
 Gnip v2.1
     - switch to that notification stream
     - start publishing
