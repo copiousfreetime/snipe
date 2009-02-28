@@ -24,10 +24,15 @@ Other:
         - gnip/scraper.rb -> gnip/consume.rb @done(2009-02-25 01:59:24)
         - notify -> 'consume' @done(2009-02-25 01:59:26)
         - split @done(2009-02-25 01:59:27)
-        - scrape -- start here, making sure the scrape command is all good
-            - fix the daemonize pid so that more than one daemon can exist at
-              once
+        - scrape -- start here, making sure the scrape command is all good @done(2009-02-28 11:21:16)
+            - fix the daemonize pid so that more than one daemon can exist at once @done(2009-02-28 11:21:10)
             - have counters for the other errors that are retrieved. @done(2009-02-28 01:11:59)
+        - store
+            - a tyrant server, using table format, adding indexes on 
+                - author name
+                - hashtag
+                - source
+                - mentions
         - publish
             - have a gnip publication document
             - publish to multiple locations, one for rollowing up metrics( couch
