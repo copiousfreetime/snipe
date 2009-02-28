@@ -5,7 +5,7 @@ require 'snipe/beanstalk/queue'
 module Snipe
   module Gnip
     class Splitter < ::Nokogiri::XML::SAX::Parser
-      attr_accessor :scrape
+      attr_accessor :scrape_queue
 
       def self.split_gnip_notification( fname )
         p = self.new
@@ -15,7 +15,7 @@ module Snipe
 
       def self.default_opts
         { :doc => Gnip::NotificationDocument.new,
-          :scrape => :default }
+          :scrape_queue => :default }
       end
       
       def logger
@@ -27,30 +27,30 @@ module Snipe
         doc = opts.delete( :doc )
 
         super( doc )
-        case bean_opt = opts[:scrape]
+        case bean_opt = opts[:scrape_queue]
         when nil
-          @scrape = nil
+          @scrape_queue = nil
         when :default
-          @scrape = Snipe::Beanstalk::Queue.scrape_queue rescue nil
+          @scrape_queue = Snipe::Beanstalk::Queue.scrape_queue rescue nil
         else
           if bean_opt.respond_to?( :put ) then
-            @scrape = bean_opt
+            @scrape_queue = bean_opt
           else
-            logger.error "the value given for :scrape does not respond to put() => #{bean_opt.inspect}" 
-            @scrape = nil
+            logger.error "the value given for :scrape_queue does not respond to put() => #{bean_opt.inspect}" 
+            @scrape_queue = nil
           end
         end
-        logger.info "Connected to beanstalkd server #{scrape.name}" if can_scrape?
+        logger.info "Connected to beanstalkd server #{scrape_queue.name}" if can_put_to_scrape_queue?
 
         self.document.add_observer( self )
       end
 
-      def can_scrape?
-        scrape && scrape.connected?
+      def can_put_to_scrape_queue?
+        scrape_queue && scrape_queue.connected?
       end
 
-      def scrape_timer
-        @scrape_timer ||= ::Hitimes::Timer.new
+      def scrape_queue_put_timer
+        @scrape_queue_put_timer ||= ::Hitimes::Timer.new
       end
 
       def timer
@@ -60,8 +60,8 @@ module Snipe
       # only registered as an observer if there is a beanstalk server
       def update( *args )
         tweet = args.first
-        scrape_timer.measure {
-          scrape.put( Marshal.dump( tweet ) ) if can_scrape?
+        scrape_queue_put_timer.measure {
+          scrape_queue.put( Marshal.dump( tweet ) ) if can_put_to_scrape_queue?
         }
       end
 
@@ -72,10 +72,10 @@ module Snipe
           parse_io( io )
           io.close
         }
-        mps = scrape_timer.count / timer.duration
+        mps = scrape_queue_put_timer.count / timer.duration
 
-        logger.info "    notification : #{scrape_timer.count} at #{"%0.3f" % scrape_timer.rate} mps for a total of #{"%0.3f" % scrape_timer.sum} seconds"
-        logger.info "    total        : #{scrape_timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
+        logger.info "    notification : #{scrape_queue_put_timer.count} at #{"%0.3f" % scrape_queue_put_timer.rate} mps for a total of #{"%0.3f" % scrape_queue_put_timer.sum} seconds"
+        logger.info "    total        : #{timer.count} at #{"%0.3f" % mps} mps for a total of #{"%0.3f" % timer.duration} seconds"
         logger.info "Done parsing #{fname}"
       end
     end

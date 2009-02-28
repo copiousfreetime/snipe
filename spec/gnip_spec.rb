@@ -9,8 +9,8 @@ describe Snipe::Gnip::Splitter do
   it "Splitter#split_gnip_notifications" do
     splitter = ::Snipe::Gnip::Splitter.new( :notify => nil ) 
     splitter.split_gnip_notification( @gz_file )
-    splitter.document.timer.stats.count.should == splitter.split_timer.count
-    splitter.split_timer.count.should == 1495
+    splitter.document.timer.stats.count.should == splitter.scrape_queue_put_timer.count
+    splitter.scrape_queue_put_timer.count.should == 1495
   end
 
   it "Splitter.split_gnip_notifications" do
@@ -24,8 +24,8 @@ describe Snipe::Gnip::Splitter do
   end
 
   it "logs an error if give something a beanstalk option does not respond to put" do
-    splitter = ::Snipe::Gnip::Splitter.new( :split => Object.new )
-    spec_log.should =~ /the value given for :split does not respond to put/
+    splitter = ::Snipe::Gnip::Splitter.new( :scrape_queue  => Object.new )
+    spec_log.should =~ /the value given for :scrape_queue does not respond to put/
   end
 
   it "calls put on the beanstalk server" do
@@ -42,6 +42,6 @@ describe Snipe::Gnip::Splitter do
     end
     splitter = ::Snipe::Gnip::Splitter.new( :split => DeadQueue.new )
     splitter.split_gnip_notification( @gz_file )
-    splitter.split.count.should == 1495
+    splitter.scrape_queue_put_timer.count.should == 1495
   end
 end
