@@ -69,9 +69,9 @@ module Snipe
         
       # reopen all the logs
       Snipe::Log.init
-      Daemonizable.logger.info "Running as a daemon"
-   
       write_pid_file
+
+      Daemonizable.logger.info "Running as a daemon, pid file -> #{pid_file}"
 
       at_exit do
         Daemonizable.logger.info "Exiting!"

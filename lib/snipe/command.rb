@@ -94,6 +94,7 @@ module Snipe
 end
 
 require 'snipe/commands/setup'
+require 'snipe/commands/status'
 require 'snipe/commands/consume'
 require 'snipe/commands/split'
 require 'snipe/commands/scrape'

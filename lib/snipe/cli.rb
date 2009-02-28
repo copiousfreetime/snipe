@@ -24,6 +24,17 @@ module Snipe
       run { Cli.run_command_with_params( 'setup', params ) }
     }
 
+    mode( :status ) {
+      description <<-txt
+      Report the status of the system.
+      txt
+
+      mixin :option_home
+      mixin :option_log_level
+
+      run { Cli.run_command_with_params( 'status', params ) }
+    }
+
     mode( :consume ) {
       description <<-txt
       Consume the notification stream from Gnip and publish this event 
@@ -34,6 +45,7 @@ module Snipe
       mixin :option_log_level
       mixin :option_daemonize
       mixin :option_limit
+      mixin :option_stop
 
       run { Cli.run_command_with_params( 'consume', params ) }
     }
@@ -47,6 +59,7 @@ module Snipe
       mixin :option_log_level
       mixin :option_daemonize
       mixin :option_limit
+      mixin :option_stop
 
       run { Cli.run_command_with_params( 'split', params ) }
     }
@@ -60,6 +73,8 @@ module Snipe
       mixin :option_home
       mixin :option_log_level
       mixin :option_daemonize
+      mixin :option_servers
+      mixin :option_stop
       mixin :option_limit
 
       run { Cli.run_command_with_params( 'scrape', params ) }
@@ -74,6 +89,7 @@ module Snipe
       mixin :option_log_level
       mixin :option_daemonize
       mixin :option_limit
+      mixin :option_stop
 
       option( 'batch-size' ) do
         description "The number of activity events to bundle into one batch"
@@ -97,6 +113,7 @@ module Snipe
       mixin :option_log_level
       mixin :option_daemonize
       mixin :option_limit
+      mixin :option_stop
 
       run { Cli.run_command_with_params( 'store', params ) }
     }
@@ -112,6 +129,21 @@ module Snipe
         argument :required
         validate { |v| ::File.directory?( v ) }
         default Snipe::Paths.root_dir
+      end
+    end
+
+    mixin :option_servers do
+      option( :servers ) do
+        description "The number of copies of this server to run.  Using this option forces --daemonize for each process"
+        argument :required
+        validate { |v| Float( v ).to_i > 0 }
+        cast :int
+      end
+    end
+
+    mixin :option_stop do
+      option( :stop ) do
+        description "Stop all known instances of this server"
       end
     end
 
