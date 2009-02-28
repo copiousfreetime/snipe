@@ -16,6 +16,10 @@ module Snipe
         @scrape ||= Queue.load_queue( Configuration.for('queues').scrape ) 
       end
       
+      def self.store_queue
+        @store ||= Queue.load_queue( Configuration.for('queues').store ) 
+      end
+
       def self.publish_queue
         @publish ||= Queue.load_queue( Configuration.for('queues').publish ) 
       end

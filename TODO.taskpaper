@@ -25,7 +25,9 @@ Other:
         - notify -> 'consume' @done(2009-02-25 01:59:26)
         - split @done(2009-02-25 01:59:27)
         - scrape -- start here, making sure the scrape command is all good
-            - have counters for the other errors that are retrieved.
+            - fix the daemonize pid so that more than one daemon can exist at
+              once
+            - have counters for the other errors that are retrieved. @done(2009-02-28 01:11:59)
         - publish
             - have a gnip publication document
             - publish to multiple locations, one for rollowing up metrics( couch

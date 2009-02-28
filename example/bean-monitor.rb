@@ -4,27 +4,31 @@ require 'beanstalk-client'
 
 conn = ::Beanstalk::Connection.new( "localhost:11300" )
 
-tubes = %w[ gnip-parse gnip-activity ]
 
+tubes = conn.list_tubes.sort
 samples    = 10
-sleep_time = 1
-differences = {
-  'gnip-parse'    => [],
-  'gnip-activity' => [],
-}
-
-prev_size = {
-  'gnip-parse'   => conn.stats_tube( 'gnip-parse' )['current-jobs-ready'],
-  'gnip-activty' => conn.stats_tube( 'gnip-activity' )['current-jobs-ready']
+sleep_time = 5
+differences = Hash.new( 0 )
+prev_size   = Hash.new( 0 )
+tubes.each { |t| 
+  differences[t] = [] 
+  s = conn.stats_tube( t )
+  if s then
+    prev_size[t] = s['current-jobs-reader']
+  else
+    prev_size[t] = 0
+  end
 }
 
 loop do
   sleep sleep_time
   puts "-<>-" * 20
 
-  tubes.each do |tube|
+  conn.list_tubes.sort.each do |tube|
 
     stats           = conn.stats_tube( tube )
+    next if not stats
+
     current_size    = stats['current-jobs-ready'] || 0
     t_prev_size     = prev_size[tube] || 0
     prev_size[tube] = current_size
@@ -39,7 +43,7 @@ loop do
     drain_rate      = sum / Float( sleep_time * t_diff.size ) # jobs / sec
     worker_count    = stats['current-jobs-reserved']
 
-    if current_size > 0 then
+    if current_size > 0 && drain_rate > 0 then
       estimated_seconds = current_size / drain_rate
       completed_at = Time.now + estimated_seconds
 

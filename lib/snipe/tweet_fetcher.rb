@@ -18,6 +18,7 @@ module Snipe
 
     attr_reader :curl
     attr_reader :timer
+    attr_reader :response_code_counts
 
     def initialize
       @curl = Curl::Easy.new do |c|
@@ -26,6 +27,7 @@ module Snipe
       end
       @timer = ::Hitimes::Timer.new
       @xml_ok = false
+      @response_code_counts = Hash.new( 0 )
     end
 
     def logger
@@ -44,8 +46,19 @@ module Snipe
     def fetch_str_from_url( url )
       curl.url = url
       curl.perform
+      c = curl.response_code
+      self.response_code_counts[c] = self.response_code_counts[c] + 1
+
+      unless curl.body_str 
+        if logger.debug? then
+          logger.debug "#{url} -> no body #{curl.response_code}"
+        end
+        throw :skip_etch
+      end
+
       body = unzip( curl.body_str )
-      case curl.response_code
+
+      case c
       when 200
         body
       when 400
@@ -101,6 +114,7 @@ module Snipe
     def log_stats( force = false )
       if force || (timer.count % 100 == 0) then
         logger.info "Fetched #{timer.count} tweets in #{"%0.3f"% timer.sum} second at #{"%0.3f" % timer.rate} tweets / second"
+        logger.info "  code counts #{response_code_counts.keys.sort.collect { |k| "#{k} => #{response_code_counts[k.to_i]}" }.join("  ")}"
       end
     end
 

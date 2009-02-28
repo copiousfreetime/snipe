@@ -4,12 +4,12 @@ require 'snipe/tweet_fetcher'
 
 module Snipe::Commands
   class Scrape < Snipe::Command
-    def split_observer
-      @split_observer ||= Snipe::Beanstalk::Observer.split_observer
+    def scrape_observer
+      @scrape_observer ||= Snipe::Beanstalk::Observer.scrape_observer
     end
     
-    def publish_queue
-      @publish_queue ||= Snipe::Beanstalk::Queue.publish_queue
+    def store_queue
+      @store_queue ||= Snipe::Beanstalk::Queue.store_queue
     end
 
     def fetcher
@@ -40,16 +40,16 @@ module Snipe::Commands
       timer.measure { 
         catch(:skip_fetch) do
           tweet.text = fetcher.fetch_text( tweet )
-          publish_queue.put( tweet )
+          store_queue.put( Marshal.dump( tweet ) )
         end
       }
       log_stats
     end
 
     def run
-      if split_observer then
-        split_observer.add_observer( self )
-        split_observer.observe( options['limit'] )
+      if scrape_observer then
+        scrape_observer.add_observer( self )
+        scrape_observer.observe( options['limit'] )
       else
         logger.error "Unable to parse, not able to observe the activity queue"
       end

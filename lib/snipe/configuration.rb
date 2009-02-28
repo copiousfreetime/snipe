@@ -60,6 +60,16 @@ Configuration.for("queues") do
     error_limit 20
   }
 
+  # The connection string for the gnip beanstalk queue dealing with store
+  # events
+  #
+  store {
+    name       "store"
+    connection "localhost:11300"
+    error_limit 20
+  }
+
+
   # The connection information for the beanstalk queue for publish events
   #
   publish {

@@ -16,6 +16,10 @@ module Snipe
         @scrape ||= Observer.new( Beanstalk::Queue.scrape_queue )
       end
 
+      def self.store_observer
+        @store ||= Observer.new( Beanstalk::Queue.store_queue )
+      end
+
       def self.publish_observer
         @publish ||= Observer.new( Beanstalk::Queue.publish_queue )
       end
@@ -75,6 +79,7 @@ module Snipe
           rescue => e
             job.release unless job.nil?
             logger.error "Failure in procssing job : #{e}"
+            e.backtrace.each { |l| logger.warn l }
             @error_count += 1
           end
         end
