@@ -98,12 +98,11 @@ end
 
 
 #-----------------------------------------------------------------------
-# Configuration for all things couchdb
+# Configuration for all things database
 #-----------------------------------------------------------------------
-Configuration.for("couchdb") do
-  tweet_db {
-    server     "http://localhost:5984"
-    db_name    "tweets"
-    bulk_insert 250 # or set to a the number of docs to bulk insert
+Configuration.for("database") do
+  tweet {
+    host "127.0.0.1"
+    port 1978
   }
 end

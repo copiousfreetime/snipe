@@ -111,8 +111,8 @@ module Snipe
         logger.debug "  #{k} => #{v}" if v
       end
 
+      cmd  = Command.find( command_name ).new( @options )
       begin
-        cmd  = Command.find( command_name ).new( @options )
         if options['daemonize'] then
           cmd.daemonize
           logger.debug "current programname = [$0]"

@@ -43,6 +43,14 @@ Other:
         - scrape @done(2009-02-23 23:13:51)
         - publish @done(2009-02-23 23:13:52)
 
+Database Config:
+    - mode=wc
+    - opts=ld
+    - rcnumm=4096
+    - lcnum=4096
+    - ncnum=1024
+    - command:
+        ttserver test.tct#mode=wc#opts=ld
 
         
 Tables:

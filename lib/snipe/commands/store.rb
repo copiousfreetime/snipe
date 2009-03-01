@@ -16,7 +16,7 @@ module Snipe::Commands
     end
 
     def database
-      @database ||= ::Snipe::Database.connect
+      @database ||= ::Snipe::Database.tweet_db
     end
 
     def log_stats( force = false )

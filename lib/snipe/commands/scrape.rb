@@ -1,4 +1,3 @@
-require 'snipe/couchdb/tweet_store'
 require 'snipe/beanstalk/observer'
 require 'snipe/tweet_fetcher'
 
