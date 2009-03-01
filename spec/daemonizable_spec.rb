@@ -47,10 +47,12 @@ describe 'Daemonizable' do
   end
 
   after( :each ) do
-    FileUtils.rm_f File.join( Snipe::Paths.pid_path, "*.pid" )
-    if File.exist?( Snipe::Paths.log_path( "snipe.log" ) ) then
-      #puts IO.read( Snipe::Paths.log_path( "snipe.log") )
-      File.delete( Snipe::Paths.log_path( "snipe.log" ) )
+    unless @child 
+      FileUtils.rm_f File.join( Snipe::Paths.pid_path, "*.pid" )
+      if File.exist?( Snipe::Paths.log_path( "snipe.log" ) ) then
+        puts IO.read( Snipe::Paths.log_path( "snipe.log") )
+        File.delete( Snipe::Paths.log_path( "snipe.log" ) )
+      end
     end
   end
   
@@ -68,7 +70,9 @@ describe 'Daemonizable' do
   it 'should create a pid file' do
     @pid = fork do
       @server.daemonize
+      @child = true
       sleep 1
+      exit 0
     end
  
     sleep 0.25
@@ -84,6 +88,7 @@ describe 'Daemonizable' do
   it 'should kill process in pid file' do
     @pid = fork do
       @server.daemonize
+      @child = true
       loop { sleep 3 }
     end
   
@@ -102,6 +107,7 @@ describe 'Daemonizable' do
   it 'should force kill process in pid file' do
     @pid = fork do
       @server.daemonize
+      @child = true
       loop { sleep 0.3 }
     end
   
@@ -118,6 +124,7 @@ describe 'Daemonizable' do
   it 'should send kill signal if timeout' do
     @pid = fork do
       @server.daemonize
+      @child = true
       sleep 5
     end
   
@@ -137,6 +144,7 @@ describe 'Daemonizable' do
   it "should exit and raise if pid file already exist" do
     @pid = fork do
       @server.daemonize
+      @child = true
       sleep 5
     end
     server_should_start_in_less_than 10
