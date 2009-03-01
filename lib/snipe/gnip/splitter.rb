@@ -7,6 +7,10 @@ module Snipe
     class Splitter < ::Nokogiri::XML::SAX::Parser
       attr_accessor :scrape_queue
 
+      # the time the file that is being processed was written to the filesystem
+      # this is the 'consume' time since its when we pulled it down from gnip
+      attr_reader :consume_mjd_stamp
+
       def self.split_gnip_notification( fname )
         p = self.new
         p.split_gnip_notification( fname )
@@ -60,6 +64,7 @@ module Snipe
       # only registered as an observer if there is a beanstalk server
       def update( *args )
         tweet = args.first
+        tweet.consume_at = consume_mjd_stamp
         scrape_queue_put_timer.measure {
           scrape_queue.put( Marshal.dump( tweet ) ) if can_put_to_scrape_queue?
         }
@@ -67,6 +72,8 @@ module Snipe
 
       def split_gnip_notification( fname )
         logger.info "Start parsing #{fname}"
+        @consume_mjd_stamp = File.mtime( fname ).mjd_stamp
+
         timer.measure {
           io = Zlib::GzipReader.open( fname )
           parse_io( io )

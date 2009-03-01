@@ -54,25 +54,26 @@ Tables:
         - iso "yyyy-mm-dd"
 
     Tweets:
-        - key = 'tweet/#{status_id}' where id is item minux xml
-        - type 'Tweet'
-        - status_id
-        - author (username)
-        - text ( full text )
-        - url
-        - destinationurl
-        - source
-        - at
-        - author_snapshot ( 'author/#{username}/#{jd}' )
-        - post_date    ( julan day of at )
-        - post_at      ( julian time of at )
-        - split_at     ( julian time )
-        - scrape_at    ( julian time )
-        - store_at     ( julian time )
+        - key = 'tweet/#{status_id}' where id is item minux xml @done(2009-02-28 17:16:19)
+        - type 'Tweet' @done(2009-02-28 17:17:02)
+        - status_id @done(2009-02-28 17:14:21)
+        - author (username) @done(2009-02-28 17:15:58)
+        - text ( full text ) @done(2009-02-28 17:16:17)
+        - url @done(2009-02-28 17:18:36)
+        - destinationurl @done(2009-02-28 17:18:45)
+        - source @done(2009-02-28 17:18:55)
+        - at @done(2009-02-28 17:19:04)
+        - author_snapshot ( 'author/#{username}/#{jd}' ) @done(2009-02-28 17:36:06)
+        - post_date    ( julan day of at ) @done(2009-02-28 18:03:34)
+        - post_at      ( julian time of at ) @done(2009-02-28 18:02:48)
+        - consume_at   ( julian time of file save ) @done(2009-02-28 17:53:49)
+        - split_at     ( julian time ) @done(2009-02-28 17:49:00)
+        - scrape_at    ( julian time ) @done(2009-02-28 17:55:36)
+        - store_at     ( julian time ) @done(2009-02-28 17:57:30)
         - publish_at   ( julian time )
-        - tags (csv)
-        - mentions (csv)
-        - urls (csv)
+        - tags (tsv) @done(2009-02-28 17:24:21)
+        - mentions (tsv) @done(2009-02-28 17:24:22)
+        - urls (tsv) @done(2009-02-28 17:34:27)
 
     Authors:
         - id = 'author/#{username}'

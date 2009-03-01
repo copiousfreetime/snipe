@@ -25,7 +25,7 @@ module Snipe::Commands
 
     def log_stats( force = false )
       if force || (timer.count % 100 == 0) then
-        logger.info "Fetched and Stored #{timer.count} tweets in #{"%0.3f"% timer.sum} second at #{"%0.3f" % timer.rate} tweets / second"
+        logger.info "Fetched #{timer.count} tweets in #{"%0.3f"% timer.sum} second at #{"%0.3f" % timer.rate} tweets / second"
       end
     end
 
@@ -40,6 +40,7 @@ module Snipe::Commands
       timer.measure { 
         catch(:skip_fetch) do
           tweet.text = fetcher.fetch_text( tweet )
+          tweet.scrape_at = Time.now_as_mjd_stamp
           store_queue.put( Marshal.dump( tweet ) )
         end
       }
@@ -51,7 +52,7 @@ module Snipe::Commands
         scrape_observer.add_observer( self )
         scrape_observer.observe( options['limit'] )
       else
-        logger.error "Unable to parse, not able to observe the activity queue"
+        logger.error "Unable to parse, not able to observe the scrape ueue"
       end
 
       shutdown

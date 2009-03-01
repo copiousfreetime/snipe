@@ -7,6 +7,7 @@
 # in the sense of Julian Day
 #
 require 'date'
+require 'time'
 module Snipe
   module Julian
     module Date
@@ -28,8 +29,12 @@ module Snipe
 
         # convert from a modified julian day to a Time
         def from_mjd( mjd )
-          d = ::Date.mjd_to_civl( mjd )
-          ::Time.gm( d.year, d.month, d.day )
+          d = ::Date.mjd_to_civil( mjd )
+          ::Time.gm( d[0], d[1], d[2] )
+        end
+
+        def now_as_mjd_stamp
+          ::Time.now.utc.mjd_stamp
         end
 
         # convert from a modified julian day stamp to a Time
@@ -53,10 +58,6 @@ module Snipe
       module InstanceMethods
         def seconds_of_day
           ((hour * 3600) + (min * 60) + (sec) + (usec/1_000_000)).to_f
-        end
-
-        def to_date
-          Date.new( year, month, day )
         end
 
         # calculate the modified julian day fraction

@@ -10,8 +10,8 @@ module Snipe
 
       include Observable
 
-      attr_reader :timer
-      attr_reader :interval
+      attr_reader   :timer
+      attr_reader   :interval
 
       attr_reader :fragment_stack
 
@@ -64,6 +64,7 @@ module Snipe
           return
         when "activity"
           raise "Woah!  Parsing error at 'activity' closing tag: #{f.inspect}" unless fragment_stack.empty?
+          @current_tweet.split_at   = Time.now_as_mjd_stamp
           self.changed
           self.notify_observers( @current_tweet )
           @current_tweet = nil

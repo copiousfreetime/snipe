@@ -27,7 +27,6 @@ describe Snipe::Tweet do
             "at","2009-02-19T23:11:27.000Z", 
             "source","DestroyTwitter",
             "text" , "como que manda blips aqui? num sei."]
-
     @normal_t = Snipe::Tweet.new( @normal )
 
     @reply = [ "source","twhirl", 
@@ -38,7 +37,6 @@ describe Snipe::Tweet do
             "actor","JeffreyLin",
             "at","2009-02-21T00:36:54.000Z",
             "text" , "@JeffreyLin Haven't seen you post much lately.  Is everything ok with you?"]
-
     @reply_t = Snipe::Tweet.new( @reply )
 
     @hashtag = [ "source" , "web",
@@ -48,14 +46,26 @@ describe Snipe::Tweet do
                  "url"    , "http://twitter.com/status/show/1117167788.xml",
                  "text"   , "yesterday's blanket of snow has now covered the burned scars of the #boulderfire" ]
     @hashtag_t = Snipe::Tweet.new( @hashtag )
+
+    @urls_t = Snipe::Tweet.new( @hashtag )
+  end
+
+  it "has the 'Tweet' type" do
+    @normal_t.type.should == "Tweet"
   end
 
   it "extacts the id from the url " do
-    @normal_t.tweet_id.should == "1232707799"
+    @normal_t.status_id.should == "1232707799"
   end
 
   it "extracts the source" do
     @normal_t.source.should == "DestroyTwitter"
+  end
+
+  it "extracts the urls from the text" do 
+    @urls_t.text = "here's the original of the photo @thecupboulder backroom  http://is.gd/kPvm"
+    @urls_t.urls.size.should == 1
+    @urls_t.urls.first.should == "http://is.gd/kPvm"
   end
 
   it "has a reply url" do
@@ -79,16 +89,41 @@ describe Snipe::Tweet do
   end
 
   it "knows everyone else mentioned in the tweet" do
-    @reply_t.mentioning.should == [ "@JeffreyLin" ]
+    @reply_t.mentions.should == [ "@JeffreyLin" ]
   end
 
   it "updates mentioning when text is set" do
     @reply_t.text = "This is something that @atmos and @aneiro said"
-    @reply_t.mentioning.should == %w[ @atmos @aneiro ]
+    @reply_t.mentions.should == %w[ @atmos @aneiro ]
   end
 
   it "updates hashtags when text is set" do
     @hashtag_t.text = "What did you say about #thatstuff #overthere ?"
     @hashtag_t.hashtags.should == %w[ #thatstuff #overthere ]
+  end
+
+  it "has the post_at as an mjd_stamp" do
+    @hashtag_t.post_at.should =~ /\d{5}\.\d{5}/
+  end
+
+  it "has the post_date as an mjd" do
+    @normal_t.post_date.should == 54881
+  end
+
+  it "has a key" do
+    @hashtag_t.key.should == "tweet/1117167788"
+  end
+
+  it "converts to a hash" do
+    @hashtag_t.to_hash.should be_instance_of( Hash )
+  end
+
+  it "raises an error in hash conversion if it can't figure out what type to use" do
+    @hashtag_t.split_at = Object.new
+    lambda { @hashtag_t.to_hash }.should raise_error(StandardError, /Unknown type conversion/)
+  end
+
+  it "creates an author snapshot key" do
+    @normal_t.author_snapshot_key.should == "author/copiousfreetime/54881"
   end
 end
