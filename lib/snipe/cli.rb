@@ -114,6 +114,7 @@ module Snipe
       mixin :option_daemonize
       mixin :option_limit
       mixin :option_stop
+      mixin :option_servers
 
       run { Cli.run_command_with_params( 'store', params ) }
     }
