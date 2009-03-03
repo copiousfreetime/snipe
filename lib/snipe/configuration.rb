@@ -113,6 +113,6 @@ end
 Configuration.for("database") do
   tweet {
     host "127.0.0.1"
-    port 1978
+    port 30303
   }
 end

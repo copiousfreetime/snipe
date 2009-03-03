@@ -1,19 +1,24 @@
 require 'rubygems'
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-require 'snipe'
+require 'beanstalk-client'
 
-q = Snipe::Beanstalk::Queue.split_queue
-#q = Snipe::Beanstalk::Queue.parse_queue
+q = ::Beanstalk::Connection.new( "localhost:11300", "publish" )
 
-puts "Listening for events on #{q.name}"
+count = 0
 loop do
+  stats = q.stats_tube( "publish" )
+  current_size    = stats['current-jobs-ready'] || 0
+
+  break unless current_size > 0
+
   job = q.reserve
+  count += 1
   obj = nil 
   begin 
     obj = Marshal.restore( job.body )
   rescue => e
     obj = job.body
   end
-  puts obj.inspect
   job.delete
+  print "#{count}\r"
 end
+puts "Drained #{count} jobs"
