@@ -20,7 +20,7 @@ module Snipe::Commands
           x.split("\n").each { |l| logger.info l.strip }
         end
       else
-        logger.error "You need the --start or the --stop option"
+        logger.error "You need the --startup or the --shutdown option"
       end
     end
   end
