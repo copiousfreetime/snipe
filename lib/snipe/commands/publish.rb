@@ -5,7 +5,7 @@ module Snipe::Commands
   class Publish < Snipe::Command
     
     def publish_observer
-      @publish_observer ||= Snipe::Beanstalk::Queue.publish_observer
+      @publish_observer ||= Snipe::Beanstalk::Observer.publish_observer
     end
 
     def timer
