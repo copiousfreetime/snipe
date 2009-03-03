@@ -10,7 +10,11 @@ module Snipe::Commands
         daemons = configuration.daemons.order
         daemons.each do |d|
           servers = configuration.daemons.send( d )
-          cmd = "#{Snipe::Paths.bin_path( 'snipe')} #{d} #{on_off} --servers #{servers} --home #{Snipe::Paths.home_dir}"
+          servopt = "--servers #{servers}"
+          if servers == 1 then
+            servopt = "--daemonize"
+          end
+          cmd = "#{Snipe::Paths.bin_path( 'snipe')} #{d} #{on_off} #{servopt} --home #{Snipe::Paths.home_dir}"
           logger.info "Running `#{cmd}`"
           x = %x[ #{cmd} ]
           x.split("\n").each { |l| logger.info l.strip }
