@@ -25,7 +25,7 @@ module Snipe::Commands
     # called by the beanstalk observer when an item is pulled off the queue
     def update( obj )
       timer.measure { 
-        tweet = Marshal.restore( obj )
+        tweet = obj
       }
       log_stats
     end
