@@ -22,7 +22,7 @@ Configuration.for('snipe') do
     order   %w[ publish store scrape split consume ]
     consume 1
     split   1
-    scrape  24
+    scrape  72
     store   1
     publish 1
   }
