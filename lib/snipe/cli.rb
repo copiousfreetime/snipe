@@ -104,9 +104,7 @@ module Snipe
 
     mode( :store ) {
       description <<-txt
-      Consume the activity events and store the resulting data into couchdb
-
-      [ Currently not used ]
+      Consume the activity events and store the resulting data into the tyrant db.
       txt
 
       mixin :option_home
@@ -118,6 +116,24 @@ module Snipe
 
       run { Cli.run_command_with_params( 'store', params ) }
     }
+
+    mode( :master ) {
+      description <<-txt
+      Control the whole set of ruby processes starting and stopping them all in concert.
+      txt
+      mixin :option_home
+      mixin :option_log_level
+      option( :startup ) do
+        description "Start all systems"
+      end
+      option( :shutdown ) do
+        description "Stop all systems"
+      end
+      
+      run { Cli.run_command_with_params( 'master', params ) }
+
+    }
+
 
     mode( :version ) {
       description "Output the version of the program"

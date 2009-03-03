@@ -1,27 +1,16 @@
 #!/usr/bin/env ruby
-#
+
 
 require 'rubygems'
-require 'rest_client'
-require 'json'
+require 'tokyotyrant'
 
-Db = RestClient::Resource.new("http://localhost:1978")
+host = ARGV.shift || "127.0.0.1"
+port = ARGV.shift || 1978
 
-def dump_info( db ) 
-  puts "Author Tweet Count:"
-  JSON.parse( db['authors'].get ).each do |k,_|
-    puts "  #{k.ljust(20, ".")} #{db["author/#{k}"].get }"
-  end
- 
-  puts "Source Tweet Count:"
-  JSON.parse( db['sources'].get ).each do | k,_ |
-    puts "  #{k.ljust(20, ".")} #{db["source/#{k}"].get } tweets"
-  end
-end
+Db = TokyoTyrant::RDBTBL.new
+Db.open( host, port )
 
-
-loop do
-  puts "-<>-" * 20
-  dump_info( Db )
-  sleep 10
+Db.stat.split("\n").sort.each do |line|
+  k,v = line.split("\t")
+  puts "#{k.ljust(20, ".")} #{v}"
 end

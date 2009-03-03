@@ -30,6 +30,10 @@ module Snipe
         return nil
       end
 
+      def self.list
+        [ split_queue, scrape_queue, store_queue, publish_queue ]
+      end
+
       attr_reader :connection
       attr_reader :configuration
 
@@ -60,6 +64,10 @@ module Snipe
 
       def connected?
         !@connection.nil?
+      end
+
+      def stats
+        @connection.stats_tube( configuration.name )
       end
 
       def name

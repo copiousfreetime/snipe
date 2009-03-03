@@ -13,6 +13,10 @@ Consuming and inserting int Couchdb:
     - submiter to take the tweet and put it into couchdb @done(2009-02-23 21:46:11)
     - commandline program to loop over the beanstalkd queue until empty @done(2009-02-23 21:46:13)
 
+Updating EY instance:
+    - hitimes @done(2009-03-01 22:03:55)
+    - orderedhash @done(2009-03-01 22:03:56)
+
 Viewing:
     - different databases for users ?
     - views in couchdb to show rollups @done(2009-02-23 21:46:16)
@@ -27,8 +31,8 @@ Other:
         - scrape -- start here, making sure the scrape command is all good @done(2009-02-28 11:21:16)
             - fix the daemonize pid so that more than one daemon can exist at once @done(2009-02-28 11:21:10)
             - have counters for the other errors that are retrieved. @done(2009-02-28 01:11:59)
-        - store
-            - a tyrant server, using table format, adding indexes on 
+        - store @done(2009-03-01 01:59:32)
+            - a tyrant server, using table format, adding indexes on  @done(2009-03-01 01:59:34)
                 - author name
                 - hashtag
                 - source
@@ -50,6 +54,14 @@ Database Config:
     - lcnum=4096
     - ncnum=1024
     - command:
+        -dmn
+        -pid /data/snipe/pid/ttserver.pid
+        -log /data/snipe/log/ttserver.log
+        -ld
+        -ulog /data/snipe/data/ulog
+        -umax 256M
+        -uas
+        -rts /data/snipe/data/soemthing.rts
         ttserver test.tct#mode=wc#opts=ld
 
         
@@ -72,7 +84,7 @@ Tables:
         - source @done(2009-02-28 17:18:55)
         - at @done(2009-02-28 17:19:04)
         - author_snapshot ( 'author/#{username}/#{jd}' ) @done(2009-02-28 17:36:06)
-        - post_date    ( julan day of at ) @done(2009-02-28 18:03:34)
+        - post_date    ( julian day of at ) @done(2009-02-28 18:03:34)
         - post_at      ( julian time of at ) @done(2009-02-28 18:02:48)
         - consume_at   ( julian time of file save ) @done(2009-02-28 17:53:49)
         - split_at     ( julian time ) @done(2009-02-28 17:49:00)
@@ -108,7 +120,6 @@ Tables:
 
     Follows:
         - id = 'author/#{username}/follows/#{username}'
-        - 
         - type 'Follow'
         - first_snap_date
         - last_snap_date

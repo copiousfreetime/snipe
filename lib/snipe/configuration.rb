@@ -16,6 +16,16 @@ Configuration.for('snipe') do
   # Generally this is the 'tmp' directory below home.
   tmp_dir  nil
 
+  # the counts of number of daemons of each system that should be run
+  # 'order' holds the startup and the shutdown order will be the reverse
+  daemons {
+    order   %w[ publish store scrape split consume ]
+    consume 1
+    split   2
+    scrape  24
+    store   2
+    publish 1
+  }
 end
 
 #-----------------------------------------------------------------------

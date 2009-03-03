@@ -20,6 +20,10 @@ module Snipe
       self.sub_path( root_dir, sub, *args )
     end
 
+    def self.bin_path( *args )
+      self.root_path( 'bin', *args )
+    end
+
     def self.lib_path( *args )
       self.root_path( "lib", *args )
     end 
