@@ -13,7 +13,7 @@ module Snipe::Commands
     end
 
     def log_stats( force = false )
-      if force || (timer.count % 100 == 0) then
+      if force || (timer.count % 1000 == 0) then
         logger.info "Published #{timer.count} tweets in #{"%0.3f"% timer.sum} second at #{"%0.3f" % timer.rate} tweets / second"
       end
     end

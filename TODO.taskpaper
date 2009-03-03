@@ -64,6 +64,8 @@ Database Config:
         -rts /data/snipe/data/soemthing.rts
         ttserver test.tct#mode=wc#opts=ld
 
+Maybe have the store method be done via tokyo cabinet instead of tokyo tyrant
+and see what the perf difference is without the server.
         
 Tables:
     Dates: 
