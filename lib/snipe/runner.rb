@@ -67,6 +67,7 @@ module Snipe
           options['daemonize'] = true
           options['instance-num'] = instance_num
           command_lifecycle( command_name )
+          break
         end
       end
     end

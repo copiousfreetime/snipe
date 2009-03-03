@@ -21,9 +21,9 @@ Configuration.for('snipe') do
   daemons {
     order   %w[ publish store scrape split consume ]
     consume 1
-    split   2
+    split   1
     scrape  24
-    store   2
+    store   1
     publish 1
   }
 end
