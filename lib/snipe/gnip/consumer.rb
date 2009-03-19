@@ -110,7 +110,7 @@ module Snipe
       end
 
       def gnip_last_bucket_id
-        c = ::Curl::Easy.new( "https://prod.gnipcentral.com/" )
+        c = ::Curl::Easy.new( "https://api-v21.gnip.com/" )
         c.headers = self.headers
         bucket_id = 0
         c.on_header do |data| 
@@ -144,6 +144,7 @@ module Snipe
       # given a bucket id download it from gnip and put it in the appropriate file  
       def download_bucket( bucket_id )
         url = bucket_url( bucket_id )
+        logger.info "Downloading #{url}"
         c = Curl::Easy.new( url )
         c.headers = self.headers
         #c.verbose = true
