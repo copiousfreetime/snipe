@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+$: <<  File.expand_path( File.join( File.dirname( __FILE__ ), "..", "lib" ) )
 require 'tokyotyrant'
 require 'rubygems'
 require 'hitimes'
@@ -18,7 +19,8 @@ def dump_author_tweets( rdb, author )
 end
 
 rdb = RDBTBL.new
-rdb.open( "playground.copiousfreetime.org", 30303)
+#rdb.open( "playground.copiousfreetime.org", 30303)
+rdb.open( "localhost", 30303)
 puts "Database has #{rdb.rnum} records"
 author = ARGV.shift
 dump_author_tweets( rdb,  author )
