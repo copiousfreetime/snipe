@@ -133,6 +133,13 @@ module Snipe
         FileUtils.mkdir_p( d ) unless File.directory?( d )
         File.join( d, "#{bucket_id}.xml.gz" )
       end
+      
+      def unzip( data )
+        sio = StringIO.new( data )
+        ::Zlib::GzipReader.new( sio ).read
+      end
+
+
 
       # given a bucket id download it from gnip and put it in the appropriate file  
       def download_bucket( bucket_id )

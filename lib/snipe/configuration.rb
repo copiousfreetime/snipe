@@ -102,7 +102,7 @@ Configuration.for('gnip') do
 
   user_agent        "Snipe/#{Snipe::Version}"
   compressed        true
-  notification_url  "https://demo-v21.gnip.com/gnip/publishers/twitter/notification/"
+  notification_url  "https://api-v21.gnip.com/gnip/publishers/twitter/notification/"
   
 end
 
