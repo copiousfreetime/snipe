@@ -6,8 +6,8 @@ conn = ::Beanstalk::Connection.new( "localhost:11300" )
 
 
 tubes = conn.list_tubes.sort
-samples    = 10
-sleep_time = 5
+samples    = 5
+sleep_time = 2
 differences = Hash.new{ |h,k| h[k] = Array.new }
 prev_size   = Hash.new( 0 )
 tubes.each { |t| 

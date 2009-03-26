@@ -169,10 +169,23 @@ module Snipe
       def download_batch(first, last)
         logger.info "Downloading #{first} -> #{last}"
         current = first
+        retry_count = 0
         timer = Hitimes::Timer.new
         while current <= last
           timer.measure do 
-            bucket_file = download_bucket( current )
+            begin 
+              bucket_file = download_bucket( current )
+            rescue => e
+              logger.error "Error downloadinng bucket #{current} : #{e.message}" 
+              logger.error "Retring"
+              sleep 1
+              retry_count += 1
+              retry unless retry_count > 10
+              e.backtrace.each do |l|
+                logger.error l.strip
+              end
+            end
+            retry_count = 0
             update_last_bucket_id( current )
             current = next_bucket_id( current )
 
