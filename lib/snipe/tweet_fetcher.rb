@@ -105,7 +105,12 @@ module Snipe
         else
           trys += 1
           if trys < 10 then
+            logger.info "Retry number #{trys} : #{html_url_for( tweet )}"
             retry
+          end
+          logger.error "#{e}"
+          e.backtrace.each do |l|
+            logger.warn l.strip
           end
           raise e
         end
