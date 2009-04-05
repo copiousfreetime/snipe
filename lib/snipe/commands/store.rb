@@ -26,6 +26,7 @@ module Snipe::Commands
     end
 
     def shutdown
+      store_observer.stop if store_observer 
       log_stats( true )
     end
 

@@ -23,7 +23,7 @@ Configuration.for('snipe') do
     consume 1
     split   1
     scrape  72
-    store   1
+    store   8
     publish 1
   }
 end

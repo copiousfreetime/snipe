@@ -11,6 +11,11 @@ module Snipe::Commands
     def splitter
       @splitter ||= Snipe::Gnip::Splitter.new
     end
+   
+    def shutdown
+      split_queue_observer.stop if split_queue_observer
+    end
+
 
     # callec by the beanstalk observer when an item is pulled off the queue
     def update( fname )

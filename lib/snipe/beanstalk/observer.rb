@@ -77,10 +77,14 @@ module Snipe
             job.delete
             @jobs_processed += 1
           rescue => e
-            job.release unless job.nil?
-            logger.error "Failure in procssing job : #{e}"
-            e.backtrace.each { |l| logger.warn l }
-            @error_count += 1
+            begin 
+              logger.error "Failure in procssing job #{job.id}: #{e}"
+              e.backtrace.each { |l| logger.warn l }
+              job.release unless job.nil?
+              @error_count += 1
+            rescue => be
+              logger.error "Failure in releasing job from #{job.id}: #{be} -- Continuing on"
+            end
           end
         end
 
