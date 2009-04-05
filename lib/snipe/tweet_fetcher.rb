@@ -90,6 +90,7 @@ module Snipe
     def fetch_text( tweet )
       timer.start
       t = nil
+      trys = 0
       begin
         if xml_ok? then
           t = fetch_text_from_xml( tweet )
@@ -102,6 +103,15 @@ module Snipe
           @xml_ok = false
           retry
         else
+          trys += 1
+          if trys < 10 then
+            logger.info "Retry number #{trys} : #{html_url_for( tweet )}"
+            retry
+          end
+          logger.error "#{e}"
+          e.backtrace.each do |l|
+            logger.warn l.strip
+          end
           raise e
         end
       end

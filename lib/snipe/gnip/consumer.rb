@@ -110,7 +110,7 @@ module Snipe
       end
 
       def gnip_last_bucket_id
-        c = ::Curl::Easy.new( "https://prod.gnipcentral.com/" )
+        c = ::Curl::Easy.new( "https://api-v21.gnip.com/" )
         c.headers = self.headers
         bucket_id = 0
         c.on_header do |data| 
@@ -133,10 +133,18 @@ module Snipe
         FileUtils.mkdir_p( d ) unless File.directory?( d )
         File.join( d, "#{bucket_id}.xml.gz" )
       end
+      
+      def unzip( data )
+        sio = StringIO.new( data )
+        ::Zlib::GzipReader.new( sio ).read
+      end
+
+
 
       # given a bucket id download it from gnip and put it in the appropriate file  
       def download_bucket( bucket_id )
         url = bucket_url( bucket_id )
+        logger.info "Downloading #{url}"
         c = Curl::Easy.new( url )
         c.headers = self.headers
         #c.verbose = true
@@ -161,10 +169,23 @@ module Snipe
       def download_batch(first, last)
         logger.info "Downloading #{first} -> #{last}"
         current = first
+        retry_count = 0
         timer = Hitimes::Timer.new
         while current <= last
           timer.measure do 
-            bucket_file = download_bucket( current )
+            begin 
+              bucket_file = download_bucket( current )
+            rescue => e
+              logger.error "Error downloadinng bucket #{current} : #{e.message}" 
+              logger.error "Retring"
+              sleep 1
+              retry_count += 1
+              retry unless retry_count > 10
+              e.backtrace.each do |l|
+                logger.error l.strip
+              end
+            end
+            retry_count = 0
             update_last_bucket_id( current )
             current = next_bucket_id( current )
 

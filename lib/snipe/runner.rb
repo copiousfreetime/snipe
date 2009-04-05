@@ -125,7 +125,7 @@ module Snipe
       rescue => e
         logger.error "while running #{command_name} : #{e.message} (check logs for backtrace)"
         e.backtrace.each do |l|
-          logger.debug l
+          logger.warn l
         end
       ensure
         cmd.after
