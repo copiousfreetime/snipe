@@ -19,6 +19,7 @@ module Snipe::Commands
     end
 
     def shutdown
+      publish_observer.stop if publish_observer 
       log_stats( true )
     end
 

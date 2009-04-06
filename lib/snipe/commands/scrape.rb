@@ -29,6 +29,7 @@ module Snipe::Commands
     end
 
     def shutdown
+      scrape_observer.stop if scrape_observer
       fetcher.log_stats( true )
       log_stats( true )
     end
