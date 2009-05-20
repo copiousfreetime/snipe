@@ -1,0 +1,139 @@
+Scraping Gnipe:
+    - scraper daemon @done(2009-02-21 15:22:46)
+    - emits 'parse' events for files that need to be parsed @done(2009-02-21 15:28:22)
+
+Emitting Queue Events:
+    - parser to parse the xml @done(2009-02-21 11:17:27)
+    - event class  @done(2009-02-21 11:17:41)
+    - daemon process to read from gnip-parse and emit to gnip-activity @done(2009-02-22 01:24:22)
+
+Consuming and inserting int Couchdb:
+    - tweet model to hold data  @done(2009-02-22 01:24:40)
+    - fetcher to go get the tweet from upstream @done(2009-02-22 01:25:27)
+    - submiter to take the tweet and put it into couchdb @done(2009-02-23 21:46:11)
+    - commandline program to loop over the beanstalkd queue until empty @done(2009-02-23 21:46:13)
+
+Updating EY instance:
+    - hitimes @done(2009-03-01 22:03:55)
+    - orderedhash @done(2009-03-01 22:03:56)
+
+Viewing:
+    - different databases for users ?
+    - views in couchdb to show rollups @done(2009-02-23 21:46:16)
+    - couchapp @done(2009-02-23 21:46:18)
+
+Other:
+    - change to have another queue between the tweet fetchers and the store
+    - change stages to:
+        - gnip/scraper.rb -> gnip/consume.rb @done(2009-02-25 01:59:24)
+        - notify -> 'consume' @done(2009-02-25 01:59:26)
+        - split @done(2009-02-25 01:59:27)
+        - scrape -- start here, making sure the scrape command is all good @done(2009-02-28 11:21:16)
+            - fix the daemonize pid so that more than one daemon can exist at once @done(2009-02-28 11:21:10)
+            - have counters for the other errors that are retrieved. @done(2009-02-28 01:11:59)
+        - store @done(2009-03-01 01:59:32)
+            - a tyrant server, using table format, adding indexes on  @done(2009-03-01 01:59:34)
+                - author name
+                - hashtag
+                - source
+                - mentions
+        - publish
+            - have a gnip publication document
+            - publish to multiple locations, one for rollowing up metrics( couch
+              ? )
+    - is scraping twitter okay according to twitter terms of service @done(2009-02-25 01:59:31)
+    - change queues to  @done(2009-02-23 23:13:48)
+        - split @done(2009-02-23 23:13:49)
+        - scrape @done(2009-02-23 23:13:51)
+        - publish @done(2009-02-23 23:13:52)
+
+Database Config:
+    - mode=wc
+    - opts=ld
+    - rcnumm=4096
+    - lcnum=4096
+    - ncnum=1024
+    - command:
+        -dmn
+        -pid /data/snipe/pid/ttserver.pid
+        -log /data/snipe/log/ttserver.log
+        -ld
+        -ulog /data/snipe/data/ulog
+        -umax 256M
+        -uas
+        -rts /data/snipe/data/soemthing.rts
+        ttserver test.tct#mode=wc#opts=ld
+
+Maybe have the store method be done via tokyo cabinet instead of tokyo tyrant
+and see what the perf difference is without the server.
+        
+Tables:
+    Dates: 
+        - key 'date/#{jd}'
+        - type 'Date'
+        - jd #{jd}
+        - ord "yyyy-ddd"
+        - iso "yyyy-mm-dd"
+
+    Tweets:
+        - key = 'tweet/#{status_id}' where id is item minux xml @done(2009-02-28 17:16:19)
+        - type 'Tweet' @done(2009-02-28 17:17:02)
+        - status_id @done(2009-02-28 17:14:21)
+        - author (username) @done(2009-02-28 17:15:58)
+        - text ( full text ) @done(2009-02-28 17:16:17)
+        - url @done(2009-02-28 17:18:36)
+        - destinationurl @done(2009-02-28 17:18:45)
+        - source @done(2009-02-28 17:18:55)
+        - at @done(2009-02-28 17:19:04)
+        - author_snapshot ( 'author/#{username}/#{jd}' ) @done(2009-02-28 17:36:06)
+        - post_date    ( julian day of at ) @done(2009-02-28 18:03:34)
+        - post_at      ( julian time of at ) @done(2009-02-28 18:02:48)
+        - consume_at   ( julian time of file save ) @done(2009-02-28 17:53:49)
+        - split_at     ( julian time ) @done(2009-02-28 17:49:00)
+        - scrape_at    ( julian time ) @done(2009-02-28 17:55:36)
+        - store_at     ( julian time ) @done(2009-02-28 17:57:30)
+        - publish_at   ( julian time )
+        - tags (tsv) @done(2009-02-28 17:24:21)
+        - mentions (tsv) @done(2009-02-28 17:24:22)
+        - urls (tsv) @done(2009-02-28 17:34:27)
+
+    Authors:
+        - id = 'author/#{username}'
+        - type 'Author'
+        - username 
+        - name
+        - location
+        - website
+        - bio
+        - picture_url
+        - follower_count
+        - following_count
+        - update_count
+        - first_snap_date( julian day)
+        - snap_date      ( julian day )
+        - snap_at        ( julian time )
+
+    AuthorSnapshots:
+        - id = 'author/#{username}/snapshot/#{jd}
+        - type 'AuthorSnapshot'
+        - snap_date (  jd )
+        - snap_at ( julian time )
+        - everything else from Authors
+
+    Follows:
+        - id = 'author/#{username}/follows/#{username}'
+        - type 'Follow'
+        - first_snap_date
+        - last_snap_date
+        - is_current
+
+
+
+        
+Gnip v2.1
+    - switch to that notification stream
+    - start publishing
+
+
+20:53:24
+

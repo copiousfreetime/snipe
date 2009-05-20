@@ -1,0 +1,10 @@
+pkg/*
+doc/*
+coverage/*
+tags
+tmp/*
+log/*
+*~
+*.swp
+data/*
+pid/*
