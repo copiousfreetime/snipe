@@ -5,18 +5,20 @@ require 'beanstalk-client'
 conn = ::Beanstalk::Connection.new( "localhost:11300" )
 
 
-tubes = conn.list_tubes.sort
+tubes = %w[ split scrape store publish ]
 samples    = 5
 sleep_time = 2
 differences = Hash.new{ |h,k| h[k] = Array.new }
 prev_size   = Hash.new( 0 )
+existing_tubes = conn.list_tubes
 tubes.each { |t| 
   differences[t] = [] 
-  s = conn.stats_tube( t )
-  if s then
-    prev_size[t] = s['current-jobs-reader']
-  else
-    prev_size[t] = 0
+  prev_size[t] = 0
+  if existing_tubes.include?( t ) then
+    s = conn.stats_tube( t )
+    if s then
+      prev_size[t] = s['current-jobs-reader']
+    end
   end
 }
 
@@ -24,8 +26,10 @@ loop do
   sleep sleep_time
   puts "-<>-" * 20
 
-  conn.list_tubes.sort.each do |tube|
+  existing_tubes = conn.list_tubes
+  tubes.each do |tube|
 
+    next unless existing_tubes.include?( tube )
     stats           = conn.stats_tube( tube )
     next if not stats
 

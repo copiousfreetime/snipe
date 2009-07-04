@@ -96,8 +96,8 @@ end
 Configuration.for('gnip') do
   # The consumer connection information
   connection {
-    username "jeremy@copiousfreetime.org"
-    password "red1fish"
+    username "Insert gnip username here"
+    password "Insert gnip password here"
   }
 
   user_agent        "Snipe/#{Snipe::Version}"
