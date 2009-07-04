@@ -3,7 +3,7 @@ require 'snipe/daemonizable'
 
 module Snipe
   # The Command is the base class for any class that wants to implement a
-  # commandline command for sst-agent.
+  # commandline command for snipe.
   #
   # Inheriting from this class will make the class registered and be available
   # for invokation from the Runner class.
