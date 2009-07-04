@@ -26,10 +26,8 @@ loop do
   sleep sleep_time
   puts "-<>-" * 20
 
-
   existing_tubes = conn.list_tubes
   tubes.each do |tube|
-
     next unless existing_tubes.include?( tube )
     stats           = conn.stats_tube( tube )
     next if not stats

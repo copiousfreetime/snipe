@@ -94,14 +94,13 @@ Configuration.for('extension') {
                 %w[ mkrf_conf.rb extconf.rb ].include?( File.basename(x) ) 
             }
 }
+
 #-----------------------------------------------------------------------
 # Rubyforge 
 #-----------------------------------------------------------------------
 Configuration.for('rubyforge') {
-  project       "FIXME: rubyforge project"
-  user          "FIXME: username"
+  project       "copiousfreetime"
+  user          "jjh"
   host          "rubyforge.org"
-  rdoc_location "#{user}@#{host}:/var/www/gforge-projects/#{project}"
+  rdoc_location "#{user}@#{host}:/var/www/gforge-projects/copiousfreetime/#{project}"
 }
-
-

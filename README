@@ -6,6 +6,15 @@
 
 == DESCRIPTION
 
+Snipe is a system to attach to and process data from the Twitter Steaming API.
+
+    http://apiwiki.twitter.com/Streaming-API-Documentation
+
+Configure snipe with your account, give it the stream(s) you would like to
+process and it will put the data into the storage mechanism you like.
+
+    http://twitter.com/help/request_streaming
+
 == FEATURES
 
 == SYNOPSIS
